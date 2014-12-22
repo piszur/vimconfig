@@ -1,0 +1,4 @@
++ új funkció
+- hibajavítás
+* egyéb változás
+

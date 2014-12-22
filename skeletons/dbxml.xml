@@ -1,0 +1,63 @@
+<bob_definition>
+  <table name="TODO:table_name"
+    schema = "TODO:fter"
+    archive_schema = "TODO:archive_fter"
+    TODO: tábla jellegzetességeinek megadása
+    basic = "1"
+    technical = "1"
+    exchange = ""
+    timeline = "1"
+    plannable = ""
+    bob_right = "SELECT, INSERT, UPDATE, DELETE">
+    TODO: entitás jellemzői
+    entity
+    <!--column-->
+    TODO: oszlopok felsorolása:
+    column
+    <!--status-->
+    TODO: státuszok beállítása
+    <status code = "active" comment = "aktív" default = "1"/>
+    <status code = "inactive" comment = "inaktív"/>
+    <status code = "deleted" comment = "törölt"/>
+    <!--constraint-->
+    TODO: szabályok megadása
+    constraint
+    <!--function-->
+    TODO: trigger függvény megadása
+    function
+    <!--trigger-->
+    <trigger type = "bob"
+      when = "BEFORE"
+      op = "INSERT OR UPDATE OR DELETE"
+      function = "bob.trigger()"
+      comment = ""
+      id = "1"/>
+    <trigger type = "bob"
+      when = "AFTER"
+      op = "INSERT OR UPDATE OR DELETE"
+      function = "bob.trigger()"
+      comment = ""
+      id = "2"/>
+    <trigger type = "fter"
+      when = "BEFORE"
+      op = "INSERT OR UPDATE OR DELETE"
+      function = "fter.trigger()"
+      comment = ""
+      id = "3"/>
+    <trigger type = "fter"
+      when = "AFTER"
+      op = "INSERT OR UPDATE OR DELETE"
+      function = "fter.trigger()"
+      comment = ""
+      id = "4"/>
+    <documentation>
+      <history>
+        <version v = "0001" date = "2013.01.14" element = "table" comment = "tábla definiálása" id = "1"/>
+        <version v = "0001" date = "2013.01.14" element = "function" comment = "tárolt eljárás definiálása" id = "2"/>
+      </history>
+      <description><![CDATA[
+        TODO:tábla funciójának ismertetése
+        ]]></description>
+    </documentation>
+  </table>
+</bob_definition>
