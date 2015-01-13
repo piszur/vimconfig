@@ -20,6 +20,10 @@ filetype on                                      "enable file type detection
 filetype plugin on                               "enable loading the plugin files for specific file types
 filetype indent on                               "enable loading the indent file for specific file types
 
+set titlestring=%(\ %M%)\ %t%(\ (%{expand(\"%:p:h\")})%)%(\ %a%)\ %{v:servername}
+set title
+set titlelen=70
+
 set omnifunc=syntaxcomplete#Complete             "specifies a function to be used for insert mode omni completion
 "filetype specific omni completion
 autocmd FileType less,css setlocal omnifunc=csscomplete#CompleteCSS
@@ -41,7 +45,7 @@ set scrolloff=5                                  "minimal number of screen lines
 set sidescroll=1                                 "minimal number of columns to scroll horizontally
 set sidescrolloff=10                             "minimal number of screen columns to keep to the left/right of the cursor
 
-set visualbell                                   "use visual bell instead of beeping
+set novisualbell                                 "use visual bell instead of beeping
 
 set ruler                                        "show the line and column number of the cursor position
 set rulerformat=%-14.(%l,%c%V%)\ %P              "determines the content of the ruler string
@@ -89,9 +93,11 @@ set fillchars=vert:\ ,stl:\ ,stlnc:\             "no fill character the statusli
 set nocursorcolumn                               "no highlight the screen column of the cursor
 " set cursorcolumn                                 "highlight the screen column of the cursor
 " highlight CursorLine term=none cterm=none ctermbg=3
+" highlight CursorLine term=none gui=none guibg=3
 set nocursorline                                 "no highlight the screen line of the cursor
 " set cursorline                                   "highlight the screen line of the cursor
 " highlight CursorLine term=none cterm=none ctermbg=3
+" highlight CursorLine term=none gui=none guibg=3
 
 "netrw bug correction:
 autocmd BufEnter * :set nocursorline
@@ -347,7 +353,7 @@ nnoremap <silent> y## :let @+=expand("#:t")<CR>
 let g:netrw_list_hide= '.*\.sw[p|o]$'            "list for hiding files in netrw
 
 "sudo saves the file (useful for handling the permission-denied error)
-command W w !sudo tee % > /dev/null
+command! W w !sudo tee % > /dev/null
 
 "write file when the buffer has been modified
 nnoremap <silent> <F2> :update<CR>
@@ -424,33 +430,48 @@ autocmd BufRead ~/.vim/vimrc normal zm
 "}}}
 "{{{ color schema and custom colors
 
-set t_Co=16                                      "number of colors available
+if has('gui_running')
+  set t_Co=256                                   "number of colors available in terminal
+else
+  set t_Co=16                                    "number of colors available in gui
+endif
 colorscheme desert                               "set 'desert' color scheme
+"set foreground and background
 set background=dark                              "Vim will try to use colors that look good on a dark background
+highlight Normal ctermfg=white ctermbg=NONE
+highlight Normal guifg=white guibg=black
 
 "line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set
 highlight LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
+highlight LineNr guifg=darkgrey guibg=NONE gui=NONE
 "last search pattern highlighting
-highlight Search term=reverse ctermfg=black ctermbg=lightblue guifg=wheat guibg=peru
+highlight Search term=reverse ctermfg=black ctermbg=lightblue
+highlight Search term=reverse guifg=black guibg=lightblue
 "column where signs are displayed
 highlight SignColumn ctermfg=lightgrey ctermbg=black cterm=bold
+highlight SignColumn guifg=lightgrey guibg=black gui=bold
 "popup menu: normal item
-highlight Pmenu ctermbg=lightblue ctermfg=white cterm=NONE guibg=Magenta
+highlight Pmenu ctermbg=lightblue ctermfg=white cterm=NONE
+highlight Pmenu guibg=lightblue guifg=white gui=NONE
 "popup menu: selected item
-highlight PmenuSel ctermbg=darkblue ctermfg=white cterm=bold guibg=Magenta
+highlight PmenuSel ctermbg=darkblue ctermfg=white cterm=bold
+highlight PmenuSel guibg=blue guifg=white gui=bold
 "tab pages line, where there are no labels
 highlight clear TabLineFill
 highlight TabLineFill ctermfg=gray ctermbg=darkgrey cterm=NONE
+highlight TabLineFill guifg=gray guibg=darkgrey gui=NONE
 "tab pages line, not active tab page label
 highlight clear TabLine
 highlight TabLine ctermfg=gray ctermbg=darkgrey cterm=NONE
+highlight TabLine guifg=gray guibg=darkgrey gui=NONE
 "tab pages line, active tab page label
 highlight clear TabLineSel
 highlight TabLineSel ctermfg=white ctermbg=none cterm=bold
+highlight TabLineSel guifg=white guibg=black gui=bold
 
 syntax sync fromstart                            "refresh syntact highlighting
-noremap <silent> <F5> <Esc>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>
-inoremap <silent> <F5> <C-o>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>
+noremap <silent> <F12> <Esc>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
+inoremap <silent> <F12> <C-o>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
 
 "}}}
 "{{{ status line
@@ -459,27 +480,58 @@ set laststatus=2                                 "always show statusline (preced
 
 " a státuszsor bal szélének színe megváltozik beszúrás módban
 highlight clear StatusLine
+
 highlight StatusLine ctermfg=white ctermbg=NONE
+highlight StatusLine guifg=white guibg=NONE
+
 highlight StatusLineNC cterm=NONE ctermfg=grey ctermbg=darkgrey
+highlight StatusLineNC gui=NONE guifg=grey guibg=darkgrey
 
 autocmd InsertEnter * highlight User1 ctermfg=black ctermbg=darkblue cterm=NONE cterm=NONE
+autocmd InsertEnter * highlight User1 guifg=black guibg=lightblue gui=NONE gui=NONE
+
 autocmd InsertEnter * highlight User2 ctermfg=darkblue ctermbg=NONE cterm=NONE
+autocmd InsertEnter * highlight User2 guifg=lightblue guibg=NONE gui=NONE
+
 " autocmd InsertEnter * highlight User8 ctermfg=black ctermbg=darkblue cterm=NONE
+" autocmd InsertEnter * highlight User8 guifg=black guibg=blue gui=NONE
 
 autocmd InsertLeave * highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE
+autocmd InsertLeave * highlight User1 guifg=black guibg=darkyellow gui=NONE
+
 autocmd InsertLeave * highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE
+autocmd InsertLeave * highlight User2 guifg=darkyellow guibg=NONE gui=NONE
+
 " autocmd InsertLeave * highlight User8 ctermfg=black ctermbg=darkyellow cterm=NONE
+" autocmd InsertLeave * highlight User8 guifg=black guibg=darkyellow gui=NONE
 
 " státuszsor színei
 highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE    " bal oldal normál szöveg
+highlight User1 guifg=black guibg=darkyellow gui=NONE          " bal oldal normál szöveg
+
 highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " bal oldal záróelem
+highlight User2 guifg=darkyellow guibg=NONE gui=NONE           " bal oldal záróelem
+
 highlight User3 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal normál szöveg
+highlight User3 guifg=black guibg=darkyellow gui=NONE          " jobb oldal normál szöveg
+
 highlight User4 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " jobb oldal záróelem
+highlight User4 guifg=darkyellow guibg=NONE gui=NONE           " jobb oldal záróelem
+
 highlight User5 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal elválasztó
+highlight User5 guifg=black guibg=darkyellow gui=NONE          " jobb oldal elválasztó
+
 highlight User6 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " alap másodlagos
-highlight User7 ctermfg=darkgrey ctermbg=black cterm=NONE    " jobb oldal kiemelt
-highlight User8 ctermfg=white ctermbg=black cterm=NONE    " bal oldal kiemelt
-highlight User9 ctermfg=lightgrey ctermbg=darkgrey cterm=NONE    " bal oldal kiemelt
+highlight User6 guifg=darkyellow guibg=NONE gui=NONE           " alap másodlagos
+
+highlight User7 ctermfg=darkgrey ctermbg=black cterm=NONE      " jobb oldal kiemelt
+highlight User7 guifg=darkgrey guibg=black gui=NONE            " jobb oldal kiemelt
+
+highlight User8 ctermfg=white ctermbg=black cterm=NONE         " bal oldal kiemelt
+highlight User8 guifg=white guibg=black gui=NONE               " bal oldal kiemelt
+
+highlight User9 ctermfg=lightgrey ctermbg=darkgrey cterm=NONE  " inaktív
+highlight User9 guifg=lightgrey guibg=darkgrey gui=NONE        " inaktív
 
 " statusline:
 let &statusline="%1*"
@@ -674,6 +726,18 @@ let g:gundo_playback_delay = 100                 "delay in milliseconds between 
 let g:showmarks_textlower="\t>"                  "defines how the mark is to be displayed
 let g:showmarks_textupper=">>"                   "same as above but for the marks A-Z
 
+highlight default ShowMarksHLl ctermfg=darkblue ctermbg=black cterm=inverse,bold
+highlight default ShowMarksHLl guifg=blue guibg=black gui=inverse,bold
+
+highlight default ShowMarksHLu ctermfg=darkblue ctermbg=black cterm=inverse,bold
+highlight default ShowMarksHLu guifg=blue guibg=black gui=inverse,bold
+
+highlight default ShowMarksHLo ctermfg=lightblue ctermbg=black cterm=bold
+highlight default ShowMarksHLo guifg=lightblue guibg=black gui=bold
+
+highlight default ShowMarksHLm ctermfg=darkblue ctermbg=black cterm=bold
+highlight default ShowMarksHLm guifg=blue guibg=black gui=bold
+
 "plugin/mru.vim                                  "manage Most Recently Used files
 " let MRU_File = '~/.vim/_vim_mru_files'         "recently used filenames are stored in this file
 let MRU_Max_Entries = 1000                       "remember 1000 most recently used file names
@@ -777,6 +841,9 @@ autocmd BufRead **/global/sql/*.sql syntax sync fromstart
 "load SQL keywords abbreviations
 source ~/.vim/abbreviation_sql.vim
 
+"load PgAdmin clone ;P
+source ~/.vim/pgadmin.vim
+
 " get count of pattern in document for template system
 function! GetCount(myPattern)
     let pos=getpos('.')
@@ -827,10 +894,10 @@ command! Wq wq
 command! WQ wq
 
 "edit a new todo.txt file, or jump to the window containing it if it already exists
-nnoremap <silent> <F6> :tab drop temp/todo.txt<CR>
+nnoremap <silent> í :tab drop temp/todo.txt<CR>
 
 "edit a new memo.txt file, or jump to the window containing it if it already exists
-nnoremap <silent> <S-F6> :tab drop temp/memo.txt<CR>
+nnoremap <silent> Í :tab drop temp/memo.txt<CR>
 
 "private keywords abbreviations
 source ~/.vim/abbreviation_private.vim
