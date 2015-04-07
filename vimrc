@@ -1,4 +1,4 @@
-" vim:foldmethod=marker
+ vim:foldmethod=marker
 "piszur's Vim config
 "https://github.com/piszur/vimconfig
 "git clone https://github.com/piszur/vimconfig.git ~/.vim
@@ -127,8 +127,19 @@ set wildignore+=*.orig                           "Merge resolution files
 " autocmd CursorMovedI * let CursorColumnI = col('.')
 " autocmd InsertLeave * if col('.') != CursorColumnI | call cursor(0, col('.')+1) | endif
 
+"effect in the GUI version of Vim
+set guioptions=aegirLt                           "autoselect,tab page,grey menu,vim icon,right scrollbar,optional left scrollbar,tearoff
+"set guioptions=aegirLtmT                           "autoselect,tab page,grey menu,vim icon,right scrollbar,optional left scrollbar,tearoff,menu,toolbar
+
+"add menu and toolbar in the GUI version of Vim
+nnoremap <F11> :set guioptions+=mT
+
 "}}}
 "{{{ navigation
+
+"easy access to jump to the exact mark
+nnoremap <Tab> `
+xnoremap <Tab> `
 
 "move cursor by display lines when wrapping
 nnoremap <Up> gk
@@ -137,6 +148,7 @@ vnoremap <Up> gk
 vnoremap <Down> gj
 " inoremap <Up> <C-o>gk
 " inoremap <Down> <C-o>gj
+" TODO: http://vim.wikia.com/wiki/Move_cursor_by_display_lines_when_wrapping
 
 "navigating to different tab (in normal and command mode)
 nnoremap <C-S-Left> <Esc>gT
@@ -156,8 +168,6 @@ nnoremap <Tab><Space> :.,/todo/
 "open Quickfix List window bottom and occupy the full width of the Vim window
 nnoremap <S-Tab><Space> :botright copen 20<cr>
 
-"easy access to jump to the exact mark
-nnoremap <Tab> `
 "}}}
 "{{{ editor settings
 
@@ -171,6 +181,16 @@ vnoremap <C-Down> :m-2<CR>gv
 
 "delete line(s) and move into register Black Hole]
 nnoremap DD "_dd
+
+"change text objects from clipboard
+nnoremap cp" ci"<C-R>0<ESC>
+nnoremap cp' ci'<C-R>0<ESC>
+nnoremap cp( ci(<C-R>0<ESC>
+nnoremap cp[ ci[<C-R>0<ESC>
+nnoremap cp< ci<<C-R>0<ESC>
+nnoremap cp{ ci{<C-R>0<ESC>
+nnoremap cpw ciw<C-R>0<ESC>
+nnoremap cpt cit<C-R>0<ESC>
 
 "insert current file name
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:t') : '%%'
@@ -369,7 +389,8 @@ command! CDC cd %:p:h
 "{{{ spell checking
 
 set nospell spelllang=hu                         "disable spell checking, and setting word list
-" setlocal spell                                   "set local spell checking, and setting word list
+autocmd FileType text setlocal spell             "check spell in text file
+autocmd FileType help setlocal nospell           "disable spell checking in help file
 
 scriptencoding utf-8
 set encoding=utf-8
@@ -443,19 +464,19 @@ highlight Normal guifg=white guibg=black
 
 "line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set
 highlight LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
-highlight LineNr guifg=darkgrey guibg=NONE gui=NONE
+highlight LineNr guifg=#555555 guibg=NONE gui=NONE
 "last search pattern highlighting
 highlight Search term=reverse ctermfg=black ctermbg=lightblue
-highlight Search term=reverse guifg=black guibg=lightblue
+highlight Search term=reverse guifg=black guibg=#729fcf
 "column where signs are displayed
 highlight SignColumn ctermfg=lightgrey ctermbg=black cterm=bold
-highlight SignColumn guifg=lightgrey guibg=black gui=bold
+highlight SignColumn guifg=lightgrey guibg=#111111 gui=bold
 "popup menu: normal item
 highlight Pmenu ctermbg=lightblue ctermfg=white cterm=NONE
-highlight Pmenu guibg=lightblue guifg=white gui=NONE
+highlight Pmenu guibg=#729fcf guifg=white gui=NONE
 "popup menu: selected item
 highlight PmenuSel ctermbg=darkblue ctermfg=white cterm=bold
-highlight PmenuSel guibg=blue guifg=white gui=bold
+highlight PmenuSel guibg=#3465a4 guifg=white gui=bold
 "tab pages line, where there are no labels
 highlight clear TabLineFill
 highlight TabLineFill ctermfg=gray ctermbg=darkgrey cterm=NONE
@@ -468,6 +489,12 @@ highlight TabLine guifg=gray guibg=darkgrey gui=NONE
 highlight clear TabLineSel
 highlight TabLineSel ctermfg=white ctermbg=none cterm=bold
 highlight TabLineSel guifg=white guibg=black gui=bold
+"folded highlighting
+highlight Folded guibg=#212121 guifg=#55574c
+"after end of file
+highlight NonText guibg=black guifg=#9999ff
+"color of commands
+highlight Statement guifg=#c4a000
 
 syntax sync fromstart                            "refresh syntact highlighting
 noremap <silent> <F12> <Esc>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
@@ -485,53 +512,53 @@ highlight StatusLine ctermfg=white ctermbg=NONE
 highlight StatusLine guifg=white guibg=NONE
 
 highlight StatusLineNC cterm=NONE ctermfg=grey ctermbg=darkgrey
-highlight StatusLineNC gui=NONE guifg=grey guibg=darkgrey
+highlight StatusLineNC gui=NONE guifg=grey guibg=#2e3436
 
 autocmd InsertEnter * highlight User1 ctermfg=black ctermbg=darkblue cterm=NONE cterm=NONE
-autocmd InsertEnter * highlight User1 guifg=black guibg=lightblue gui=NONE gui=NONE
+autocmd InsertEnter * highlight User1 guifg=black guibg=#3465a4 gui=NONE gui=NONE
 
 autocmd InsertEnter * highlight User2 ctermfg=darkblue ctermbg=NONE cterm=NONE
-autocmd InsertEnter * highlight User2 guifg=lightblue guibg=NONE gui=NONE
+autocmd InsertEnter * highlight User2 guifg=#3465a4 guibg=NONE gui=NONE
 
 " autocmd InsertEnter * highlight User8 ctermfg=black ctermbg=darkblue cterm=NONE
 " autocmd InsertEnter * highlight User8 guifg=black guibg=blue gui=NONE
 
 autocmd InsertLeave * highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE
-autocmd InsertLeave * highlight User1 guifg=black guibg=darkyellow gui=NONE
+autocmd InsertLeave * highlight User1 guifg=black guibg=#c4a000 gui=NONE
 
 autocmd InsertLeave * highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE
-autocmd InsertLeave * highlight User2 guifg=darkyellow guibg=NONE gui=NONE
+autocmd InsertLeave * highlight User2 guifg=#c4a000 guibg=NONE gui=NONE
 
 " autocmd InsertLeave * highlight User8 ctermfg=black ctermbg=darkyellow cterm=NONE
-" autocmd InsertLeave * highlight User8 guifg=black guibg=darkyellow gui=NONE
+" autocmd InsertLeave * highlight User8 guifg=black guibg=#c4a000 gui=NONE
 
 " státuszsor színei
 highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE    " bal oldal normál szöveg
-highlight User1 guifg=black guibg=darkyellow gui=NONE          " bal oldal normál szöveg
+highlight User1 guifg=black guibg=#c4a000 gui=NONE          " bal oldal normál szöveg
 
 highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " bal oldal záróelem
-highlight User2 guifg=darkyellow guibg=NONE gui=NONE           " bal oldal záróelem
+highlight User2 guifg=#c4a000 guibg=NONE gui=NONE           " bal oldal záróelem
 
 highlight User3 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal normál szöveg
-highlight User3 guifg=black guibg=darkyellow gui=NONE          " jobb oldal normál szöveg
+highlight User3 guifg=black guibg=#c4a000 gui=NONE          " jobb oldal normál szöveg
 
 highlight User4 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " jobb oldal záróelem
-highlight User4 guifg=darkyellow guibg=NONE gui=NONE           " jobb oldal záróelem
+highlight User4 guifg=#c4a000 guibg=NONE gui=NONE           " jobb oldal záróelem
 
 highlight User5 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal elválasztó
-highlight User5 guifg=black guibg=darkyellow gui=NONE          " jobb oldal elválasztó
+highlight User5 guifg=black guibg=#c4a000 gui=NONE          " jobb oldal elválasztó
 
 highlight User6 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " alap másodlagos
-highlight User6 guifg=darkyellow guibg=NONE gui=NONE           " alap másodlagos
+highlight User6 guifg=#c4a000 guibg=NONE gui=NONE           " alap másodlagos
 
-highlight User7 ctermfg=darkgrey ctermbg=black cterm=NONE      " jobb oldal kiemelt
-highlight User7 guifg=darkgrey guibg=black gui=NONE            " jobb oldal kiemelt
+highlight User7 ctermfg=darkgrey ctermbg=black cterm=NONE      " inkatív elválasztó
+highlight User7 guifg=#555753 guibg=#2e3436 gui=NONE            " inkatív elválasztó
 
-highlight User8 ctermfg=white ctermbg=black cterm=NONE         " bal oldal kiemelt
-highlight User8 guifg=white guibg=black gui=NONE               " bal oldal kiemelt
+highlight User8 ctermfg=white ctermbg=black cterm=NONE         " inkatív jobb oldal
+highlight User8 guifg=white guibg=#2e3436 gui=NONE               " inkatív jobb oldal
 
-highlight User9 ctermfg=lightgrey ctermbg=darkgrey cterm=NONE  " inaktív
-highlight User9 guifg=lightgrey guibg=darkgrey gui=NONE        " inaktív
+highlight User9 ctermfg=lightgrey ctermbg=darkgrey cterm=NONE  " inaktív bal oldal
+highlight User9 guifg=lightgrey guibg=#555753 gui=NONE        " inaktív bal oldal
 
 " statusline:
 let &statusline="%1*"
@@ -620,6 +647,8 @@ endfunction
 "plugin/highlight_matches.vim                    "rewires n and N to do the highlighing...
 "plugin/visualstar.vim                           "allows you to select some text using Vim's visual mode and then hit * and #
 "plugin/matchit.vim                              "allows you to configure % to match more than just single characters
+"plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
+autocmd BufRead,BufNewFile *.json setf json
 
 "bundle/vim-repeat                               "use the repeat command (.) with supported plugins
 "bundle/vim-snipmate                             "using TextMate-style snippets in Vim (in vim-snippets and bob_snippets)
@@ -633,6 +662,32 @@ endfunction
 "bundle/tabular                                  "text filtering and alignment
 "bundle/rename                                   "rename a buffer within Vim and on the disk
 "bundle/camelcasemotion                          "motion through CamelCaseWords and underscore_notation
+
+"bundle/javascript-libraries-syntax.vim          "syntax for JavaScript libraries
+let g:used_javascript_libs = 'jquery'
+
+"bundle/incsearch                                "incrementally highlights ALL pattern matches unlike default 'incsearch'
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map z/ <Plug>(incsearch-stay)
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+
+"bundle/vim-asterisk                             "provides improved * motions
+map *   <Plug>(asterisk-*)
+map #   <Plug>(asterisk-#)
+map g*  <Plug>(asterisk-g*)
+map g#  <Plug>(asterisk-g#)
+map z*  <Plug>(asterisk-z*)
+map gz* <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-z#)
+map gz# <Plug>(asterisk-gz#)
+
+"bundle/vim-over
+nnoremap g/ :OverCommandLine<CR>%s//
+" vnoremap g/ :OverCommandLine<CR>'<,'>s//
+vnoremap g/ :OverCommandLine<CR>s//
 
 "bundle/l9                                       "Vim-script library (fuzzyfinder dependency)
 "bundle/fuzzyfinder                              "buffer/file/command/tag/mru/etc explorer with fuzzy matching
@@ -700,7 +755,7 @@ autocmd FileType sql set commentstring=--\ %s
 
 "bundle/syntastic                                "syntax checking hacks for vim
 let g:syntastic_enable_signs=1                   "mark lines with errors and warnings in the sign column
-let g:syntastic_auto_jump=1                      "jumping to the first error reported by a check
+let g:syntastic_auto_jump=2                      "jumping to the first error reported by a check
 
 "bundle/vim_json                                 "better JSON: highlighting, JSON-specific (non-JS) warnings, quote concealing
 highlight link jsonKeyword Special
@@ -727,16 +782,16 @@ let g:showmarks_textlower="\t>"                  "defines how the mark is to be 
 let g:showmarks_textupper=">>"                   "same as above but for the marks A-Z
 
 highlight default ShowMarksHLl ctermfg=darkblue ctermbg=black cterm=inverse,bold
-highlight default ShowMarksHLl guifg=blue guibg=black gui=inverse,bold
+highlight default ShowMarksHLl guifg=blue guibg=#2e3436 gui=inverse,bold
 
 highlight default ShowMarksHLu ctermfg=darkblue ctermbg=black cterm=inverse,bold
-highlight default ShowMarksHLu guifg=blue guibg=black gui=inverse,bold
+highlight default ShowMarksHLu guifg=blue guibg=#2e3436 gui=inverse,bold
 
 highlight default ShowMarksHLo ctermfg=lightblue ctermbg=black cterm=bold
-highlight default ShowMarksHLo guifg=lightblue guibg=black gui=bold
+highlight default ShowMarksHLo guifg=lightblue guibg=#2e3436 gui=bold
 
 highlight default ShowMarksHLm ctermfg=darkblue ctermbg=black cterm=bold
-highlight default ShowMarksHLm guifg=blue guibg=black gui=bold
+highlight default ShowMarksHLm guifg=blue guibg=#2e3436 gui=bold
 
 "plugin/mru.vim                                  "manage Most Recently Used files
 " let MRU_File = '~/.vim/_vim_mru_files'         "recently used filenames are stored in this file
@@ -794,13 +849,11 @@ autocmd BufNewFile,BufRead *.tt call s:AdjustTT2Type()
 let b:tt2_syn_tags = '\[% %] <!-- -->'
 
 "use <leader><Ins> to insert template markers
-autocmd FileType tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
+autocmd FileType html,tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
 autocmd FileType javascript inoremap <Leader><Ins> {{}}<left><left>
 
 func! s:AdjustTT2Type()
-    if ( getline(1) . getline(2) . getline(3) =~ '<\chtml'
-              && getline(1) . getline(2) . getline(3) !~ '<[%?]' )
-       || getline(1) =~ '<!DOCTYPE HTML'
+    if ( getline(1) . getline(2) . getline(3) =~ '<\chtml' && getline(1) . getline(2) . getline(3) !~ '<[%?]' ) || getline(1) =~ '<!DOCTYPE HTML'
         setfiletype tt2html
     else
         setfiletype tt2
@@ -828,15 +881,15 @@ autocmd BufNewFile **/global/sqldata/*.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile **/global/xmlschema/*/history.xml 0r ~/.vim/skeletons/history.txt
 autocmd BufNewFile *.html 0r ~/.vim/skeletons/html.html | 14j$
 
-autocmd BufRead **/global/sql/*.sql silent! normal gg/--\/\*\{4\}.\* SQL\//e+1ma
-autocmd BufRead **/global/sql/*.sql silent! normal gg/^\(DROP SEQUENCE\|BEGIN\)/mb
-autocmd BufRead **/global/sql/*.sql silent! normal gg/^CREATE \(OR REPLACE FUNCTION\|TABLE\) /e+1mc
-autocmd BufRead **/global/sql/*.sql silent! normal gg/--\*\s\+DESCRIPTION/e+1md
-autocmd BufRead **/global/sql/*.sql silent! normal gg/--\*\s\+\(NOTES\|Hibakódok:\)/eme
-autocmd BufRead **/global/sql/*.sql silent! normal gg/\(LANGUAGE plpgsql.*;\|--\*\*\*\*\/\)/emmz
-autocmd BufRead **/global/sql/*.sql silent! let @/ = histget("search",-3)
-autocmd BufRead **/global/sql/*.sql silent! normal `"
-autocmd BufRead **/global/sql/*.sql syntax sync fromstart
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/--\/\*\{4\}.\* SQL\//e+1ma
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/^\(DROP SEQUENCE\|BEGIN\)/mb
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/^CREATE \(OR REPLACE FUNCTION\|TABLE\) /e+1mc
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/--\*\s\+DESCRIPTION/e+1md
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/--\*\s\+\(NOTES\|Hibakódok:\)/eme
+" autocmd BufRead **/global/sql/*.sql silent! normal gg/\(LANGUAGE plpgsql.*;\|--\*\*\*\*\/\)/emmz
+" autocmd BufRead **/global/sql/*.sql silent! let @/ = histget("search",-3)
+" autocmd BufRead **/global/sql/*.sql silent! normal `"
+" autocmd BufRead **/global/sql/*.sql syntax sync fromstart
 
 "load SQL keywords abbreviations
 source ~/.vim/abbreviation_sql.vim
@@ -894,10 +947,10 @@ command! Wq wq
 command! WQ wq
 
 "edit a new todo.txt file, or jump to the window containing it if it already exists
-nnoremap <silent> í :tab drop temp/todo.txt<CR>
+nnoremap <silent> Í :tab drop Dropbox/todo/todo.txt<CR>
 
 "edit a new memo.txt file, or jump to the window containing it if it already exists
-nnoremap <silent> Í :tab drop temp/memo.txt<CR>
+nnoremap <silent> í :tab drop temp/memo.txt<CR>
 
 "private keywords abbreviations
 source ~/.vim/abbreviation_private.vim
