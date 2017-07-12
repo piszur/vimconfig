@@ -1,4 +1,4 @@
- vim:foldmethod=marker
+ " vim:foldmethod=marker
 "piszur's Vim config
 "https://github.com/piszur/vimconfig
 "git clone https://github.com/piszur/vimconfig.git ~/.vim
@@ -27,7 +27,7 @@ set titlelen=70
 set omnifunc=syntaxcomplete#Complete             "specifies a function to be used for insert mode omni completion
 "filetype specific omni completion
 autocmd FileType less,css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType html,markdown,mustache,handlebars setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
@@ -134,6 +134,21 @@ set guioptions=aegirLt                           "autoselect,tab page,grey menu,
 "add menu and toolbar in the GUI version of Vim
 nnoremap <F11> :set guioptions+=mT
 
+" Zoom / Restore window in multiple windows mode.
+function! s:ZoomToggle() abort
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <C-W>u :ZoomToggle<CR>
+
 "}}}
 "{{{ navigation
 
@@ -166,18 +181,21 @@ nnoremap <Tab><Right> <C-w>l
 nnoremap <Tab><Space> :.,/todo/
 
 "open Quickfix List window bottom and occupy the full width of the Vim window
-nnoremap <S-Tab><Space> :botright copen 20<cr>
+nnoremap <Space><Space> :botright copen 20<cr>
+
+"moving cursor after the next |
+" nnoremap <Tab>| /|/e+1<cr>
 
 "}}}
 "{{{ editor settings
 
 "drag single lines (or lines in linewise-visual and blockwise-visual mode)
 nmap <C-Up> :m-2<CR>
-inoremap <C-Up> <Esc>:m+<CR>
-vnoremap <C-Up> :m'>+<CR>gv
+inoremap <C-Up> <Esc>:m-2<CR>
+vnoremap <C-Up> :m-2<CR>gv
 nmap <C-Down> :m+<CR>
-inoremap <C-Down> <Esc>:m-2<CR>
-vnoremap <C-Down> :m-2<CR>gv
+inoremap <C-Down> <Esc>:m+<CR>
+vnoremap <C-Down> :m'>+<CR>gv
 
 "delete line(s) and move into register Black Hole]
 nnoremap DD "_dd
@@ -230,10 +248,6 @@ inoremap <expr> <C-r>#/ expand('#:h').'/'
 " inoremap [<End>         [<End>
 " inoremap [<End><End>    [<End>]
 " inoremap []             []
-
-"protection against routine
-map <C-z> <Esc>
-imap <C-z> <Esc>ui
 
 iabbrev d: <C-r>=strftime("%G.%m.%d")<CR>
 iabbrev D: <C-r>=strftime("%G %B %d, %A")<CR>
@@ -317,12 +331,12 @@ nnoremap <C-y>z mtg'a"+yg'zg`t
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>:call clearmatches()<CR>
 
 "replace a match of word nearest to the cursor
-noremap // yiw:%s/\<<C-r>"\>//gc<Left><Left><Left>
-vnoremap // y:%s/<C-r>"//gc<Left><Left><Left>
+noremap // "syiw:%S/<C-r>s//gc<Left><Left><Left>
+vnoremap // "sy:%S/<C-r>s//gc<Left><Left><Left>
 
 "replace a match of word nearest to the cursor (with default value)
-noremap /// :%s/\<<C-r><C-W>\>/<C-r><C-W>/gc<Left><Left><Left>
-vnoremap /// y:%s/<C-r>"/<C-r>"/gc<Left><Left><Left>
+noremap /// "syiw:%S/<C-r>s/<C-r>s/gc<Left><Left><Left>
+vnoremap /// "sy:%S/<C-r>s/<C-r>s/gc<Left><Left><Left>
 
 "count a match of word nearest to the cursor
 nnoremap ?? :%s/\<<C-R><C-W>\>/&/gn<CR>
@@ -447,6 +461,7 @@ autocmd BufEnter *.pm :setlocal foldmethod=expr
 
 "close fold in read vimrc
 autocmd BufRead ~/.vim/vimrc normal zm
+autocmd BufRead ~/.nvim/vimrc normal zm
 
 "}}}
 "{{{ color schema and custom colors
@@ -498,7 +513,7 @@ highlight Statement guifg=#c4a000
 
 syntax sync fromstart                            "refresh syntact highlighting
 noremap <silent> <F12> <Esc>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
-inoremap <silent> <F12> <C-o>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
+inoremap <silent> <F12> <C-o>:syntax sync fromstart<CR><C-o>:let &l:statusline = g:Active_statusline<CR><C-o>:redraw!<CR>
 
 "}}}
 "{{{ status line
@@ -664,7 +679,12 @@ autocmd BufRead,BufNewFile *.json setf json
 "bundle/camelcasemotion                          "motion through CamelCaseWords and underscore_notation
 
 "bundle/javascript-libraries-syntax.vim          "syntax for JavaScript libraries
-let g:used_javascript_libs = 'jquery'
+let g:used_javascript_libs = 'jquery,underscore,backbone'
+autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_backbone = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_prelude = 0
+autocmd BufReadPre *.js let b:javascript_lib_use_angularjs = 0
 
 "bundle/incsearch                                "incrementally highlights ALL pattern matches unlike default 'incsearch'
 map /  <Plug>(incsearch-forward)
@@ -708,6 +728,7 @@ nnoremap <silent> <Leader>fh :FufHelpWithCursorWord<CR>
 
 "bundle/vim-fugitive                             "the best Git wrapper of all time
 " set diffopt+=vertical                            "Gdiff split window vertical
+autocmd BufReadPost fugitive://* set bufhidden=delete
 
 "bundle/bufexplorer                              "you can quickly and easily switch between buffers
 " nmap <Tab>00 <Leader>bs
@@ -720,6 +741,20 @@ let NERDTreeIgnore=['\.sw.\?$', '\~$']
 
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
+
+"bundle/nerdtree-git-plugin
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
 
 "bundle/vim-speeddating                          "use CTRL-A/CTRL-X to increment dates, times, and more
 autocmd BufEnter * :SpeedDatingFormat %y.%m.%d
@@ -850,6 +885,8 @@ let b:tt2_syn_tags = '\[% %] <!-- -->'
 
 "use <leader><Ins> to insert template markers
 autocmd FileType html,tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
+autocmd FileType html.ep inoremap <Leader><Ins> <%=  %><left><left><left>
+autocmd FileType mustache,handlebars inoremap <Leader><Ins> {{}}<left><left>
 autocmd FileType javascript inoremap <Leader><Ins> {{}}<left><left>
 
 func! s:AdjustTT2Type()
@@ -877,6 +914,7 @@ autocmd BufEnter **/.git/COMMIT_EDITMSG %s/#\t/\t/ | normal gg9j
 
 autocmd BufNewFile **/global/dbxml/*.xml 0r ~/.vim/skeletons/dbxml.xml | :%foldopen
 autocmd BufNewFile **/global/sql/*.sql 0r ~/.vim/skeletons/sql.sql | 7j
+autocmd BufNewFile *.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile **/global/sqldata/*.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile **/global/xmlschema/*/history.xml 0r ~/.vim/skeletons/history.txt
 autocmd BufNewFile *.html 0r ~/.vim/skeletons/html.html | 14j$
@@ -937,6 +975,10 @@ endfunction
 "     let pos=getpos('.')
 "     return matchstr(matchstr(getline("'{","'}"),"FROM"),'FROM [^.]*\..*\(list\|read\|filter\|get\)_\zs[^(]*\ze(.*')
 " endfunction
+
+"insert path to sql folder in BOB virtual machines
+cnoremap <expr> <C-b>s (getcmdtype() == ':' && split(expand("%:p"),"/")[1] == 'fejleszto') ? "/".join(split(expand("%:p"),"/")[0:3],"/")."/core/**/sql/" : ''
+inoremap <expr> <C-b>s (split(expand("%:p"),"/")[1] == 'fejleszto') ? "/".join(split(expand("%:p"),"/")[0:3],"/")."/core/**/sql/" : ''
 
 "}}}
 "{{{ private settings

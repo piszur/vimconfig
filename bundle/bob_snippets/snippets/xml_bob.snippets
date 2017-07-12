@@ -34,12 +34,13 @@ snippet column
 	  not_null = "${3:NOT NULL}"
 	  default = "${4}"
 	  comment = "${5:oszlop leirasa}"
-	  visibility = "${6:hidden}"
-	  id = "${7:1}">
+	  example = "${6}"
+	  visibility = "${7:hidden}"
+	  id = "${8:1}">
 	</column>${0}
 # dbxml Foreign key reference
 snippet references
-	<references schema = "${1:fter}"
+	<references schema = "${1:public}"
 	  table  = "${2:table_name}"
 	  column = "${3:id}"
 	  get_status = ""
@@ -92,15 +93,15 @@ snippet function
 	      NEW.full_name := NULLIF(my_strnorm( 1, NEW.full_name ),'');
 
 	      IF NEW.short_name = '' THEN
-	        PERFORM public.bob_syslog( 2, logParams, 'fter_${2:table_name}_001' );
+	        PERFORM public.bob_syslog( 2, logParams, '${3:public}_${2:table_name}_001' );
 	      END IF; -- IF NEW.short_name = '' THEN
 	      IF NEW.full_name = '' THEN
-	        PERFORM public.bob_syslog( 2, logParams, 'fter_$2_002' );
+	        PERFORM public.bob_syslog( 2, logParams, '$3_$2_002' );
 	      END IF; -- IF NEW.full_name = '' THEN
 
-	      --  SELECT INTO tmpID id FROM fter.$2 WHERE $2.eid != myEID AND $2.short_name = NEW.short_name LIMIT 1;
+	      --  SELECT INTO tmpID id FROM $3.$2 WHERE $2.eid != myEID AND $2.short_name = NEW.short_name LIMIT 1;
 	      --  IF FOUND THEN
-	      --    PERFORM public.bob_syslog( 2, logParams, 'fter_$2_003' );
+	      --    PERFORM public.bob_syslog( 2, logParams, '$3_$2_003' );
 	      --  END IF; -- IF FOUND THEN
 	    END IF; -- IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
 
