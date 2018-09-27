@@ -757,7 +757,7 @@ map z*  <Plug>(asterisk-z*)
 map gz* <Plug>(asterisk-gz*)
 map z#  <Plug>(asterisk-z#)
 map gz# <Plug>(asterisk-gz#)
-let g:asterisk#keeppos = 0
+let g:asterisk#keeppos = 1
 
 "bundle/vim-over
 nnoremap g/ :OverCommandLine<CR>%s//
