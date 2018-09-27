@@ -183,8 +183,7 @@ nnoremap <Tab><Right> <C-w>l
 nnoremap <Tab><Space> :.,/todo\\|fixme/
 
 "open Quickfix List window bottom and occupy the full width of the Vim window
-" autocmd! BufEnter,BufRead,BufNewFile,BufReadPost  * :if &buftype is# 'quickfix' | nnoremap <Space><Space> :cclose<cr> | else | nnoremap <Space><Space> :botright copen 20<cr> | endif
-autocmd! BufEnter,BufRead,BufNewFile,BufReadPost  * :if &buftype is# 'quickfix' | nnoremap qq :cclose<cr>  | nnoremap <Space><Space> :lclose<cr>| else | nnoremap qq :botright copen 20<cr> | nnoremap <Space><Space> :lopen<cr>| endif
+nnoremap <Space><Space> :botright copen 20<cr>
 
 "moving cursor after the next |
 " nnoremap <Tab>| /|/e+1<cr>
@@ -214,8 +213,8 @@ nnoremap cpw ciw<C-R>0<ESC>
 nnoremap cpt cit<C-R>0<ESC>
 
 "insert current file name
-cnoremap <expr> %% getcmdtype() == ':' ? expand('%:t:r') : '%%'
-inoremap <expr> <C-r>%% expand('%:t:r')
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:t') : '%%'
+inoremap <expr> <C-r>%% expand('%:t')
 
 "insert full path of current file name
 cnoremap <expr> %/ getcmdtype() == ':' ? expand('%:h').'/' : '%/'
@@ -349,28 +348,6 @@ vnoremap ?? y:%s/\<<C-R>"\>/&/gn<CR>
 nnoremap ??? :%s/<C-R><C-W>/&/gn<CR>
 vnoremap ??? y:%s/<C-R>"/&/gn<CR>
 
-" set args from the quickfix list (for the argdo search and replace)
-command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
-" populate the argument list with each of the files named in the quickfix list
-function! QuickfixFilenames()
-  let buffer_numbers = {}
-  for quickfix_item in getqflist()
-    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
-  endfor
-  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
-endfunction
-
-" set args from the quickfix list (for the argdo search and replace)
-command! -nargs=0 -bar Largs execute 'args' LocationFilenames()
-" populate the argument list with each of the files named in the quickfix list
-function! LocationFilenames()
-  let buffer_numbers = {}
-  for location_item in getloclist(0)
-    let buffer_numbers[location_item['bufnr']] = bufname(location_item['bufnr'])
-  endfor
-  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
-endfunction
-
 "show CSS color code in browser
 "}}}
 "{{{ manage clipboard
@@ -400,7 +377,7 @@ vnoremap P P`[v`]
 "yank current filename or path using the system clipboard
 nnoremap <silent> y% :let @+=expand("%")<CR>
 nnoremap <silent> y%/ :let @+=expand("%:h")<CR>
-nnoremap <silent> y%% :let @+=expand("%:t:r")<CR>
+nnoremap <silent> y%% :let @+=expand("%:t")<CR>
 
 "yank alternate filename or path using the system clipboard
 nnoremap <silent> y# :let @+=expand("#")<CR>
@@ -496,53 +473,48 @@ if $COLORTERM == 'gnome-terminal' || has('gui_running')
   set t_Co=256                                   "number of colors available in terminal
   colorscheme gruvbox                               "set 'gruvbox' color scheme
 else
-  set t_Co=16                                    "number of colors available in gui
+  " set t_Co=16                                    "number of colors available in gui
   colorscheme desert                               "set 'desert' color scheme
 endif
 "set foreground and background
 set background=dark                              "Vim will try to use colors that look good on a dark background
-highlight Normal ctermfg=white ctermbg=NONE
-highlight Normal guifg=white guibg=black
+" highlight Normal ctermfg=white ctermbg=NONE
+" highlight Normal guifg=white guibg=black
 
-"line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set
-highlight LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
-highlight LineNr guifg=#555555 guibg=NONE gui=NONE
-"last search pattern highlighting
-if $COLORTERM == 'gnome-terminal' || has('gui_running')
-  highlight Search ctermfg=lightblue ctermbg=black
-else
-  highlight Search ctermfg=black ctermbg=lightblue
-  highlight IncSearch ctermfg=black ctermbg=yellow
-endif
-highlight Search guifg=#afffff guibg=black
-
-"column where signs are displayed
-highlight SignColumn ctermfg=lightgrey ctermbg=black cterm=bold
-highlight SignColumn guifg=lightgrey guibg=#111111 gui=bold
-"popup menu: normal item
-highlight Pmenu ctermbg=lightblue ctermfg=black cterm=NONE
-highlight Pmenu guibg=#afffff guifg=black gui=NONE
-"popup menu: selected item
-highlight PmenuSel ctermbg=darkblue ctermfg=white cterm=bold
-highlight PmenuSel guibg=#3465a4 guifg=white gui=bold
-"tab pages line, where there are no labels
-highlight clear TabLineFill
-highlight TabLineFill ctermfg=gray ctermbg=darkgrey cterm=NONE
-highlight TabLineFill guifg=gray guibg=darkgrey gui=NONE
-"tab pages line, not active tab page label
-highlight clear TabLine
-highlight TabLine ctermfg=gray ctermbg=darkgrey cterm=NONE
-highlight TabLine guifg=gray guibg=darkgrey gui=NONE
-"tab pages line, active tab page label
-highlight clear TabLineSel
-highlight TabLineSel ctermfg=white ctermbg=none cterm=bold
-highlight TabLineSel guifg=white guibg=black gui=bold
-"folded highlighting
-highlight Folded guibg=#212121 guifg=#55574c
-"after end of file
-highlight NonText guibg=black guifg=#9999ff
-"color of commands
-highlight Statement guifg=#c4a000
+" "line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set
+" todo
+" highlight LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
+" highlight LineNr guifg=#555555 guibg=NONE gui=NONE
+" "last search pattern highlighting
+" highlight Search term=reverse ctermfg=black ctermbg=lightblue
+" highlight Search term=reverse guifg=black guibg=#729fcf
+" "column where signs are displayed
+" highlight SignColumn ctermfg=lightgrey ctermbg=black cterm=bold
+" highlight SignColumn guifg=lightgrey guibg=#111111 gui=bold
+" "popup menu: normal item
+" highlight Pmenu ctermbg=lightblue ctermfg=white cterm=NONE
+" highlight Pmenu guibg=#729fcf guifg=white gui=NONE
+" "popup menu: selected item
+" highlight PmenuSel ctermbg=darkblue ctermfg=white cterm=bold
+" highlight PmenuSel guibg=#3465a4 guifg=white gui=bold
+" "tab pages line, where there are no labels
+" highlight clear TabLineFill
+" highlight TabLineFill ctermfg=gray ctermbg=darkgrey cterm=NONE
+" highlight TabLineFill guifg=gray guibg=darkgrey gui=NONE
+" "tab pages line, not active tab page label
+" highlight clear TabLine
+" highlight TabLine ctermfg=gray ctermbg=darkgrey cterm=NONE
+" highlight TabLine guifg=gray guibg=darkgrey gui=NONE
+" "tab pages line, active tab page label
+" highlight clear TabLineSel
+" highlight TabLineSel ctermfg=white ctermbg=none cterm=bold
+" highlight TabLineSel guifg=white guibg=black gui=bold
+" "folded highlighting
+" highlight Folded guibg=#212121 guifg=#55574c
+" "after end of file
+" highlight NonText guibg=black guifg=#9999ff
+" "color of commands
+" highlight Statement guifg=#c4a000
 
 syntax sync fromstart                            "refresh syntact highlighting
 noremap <silent> <F12> <Esc>:syntax sync fromstart<CR>:let &l:statusline = g:Active_statusline<CR>:redraw!<CR>
@@ -564,35 +536,48 @@ highlight StatusLine guifg=white guibg=NONE
 highlight StatusLineNC cterm=NONE ctermfg=grey ctermbg=darkgrey
 highlight StatusLineNC gui=NONE guifg=grey guibg=#2e3436
 
-autocmd InsertEnter * highlight User1 ctermfg=black ctermbg=lightblue cterm=NONE cterm=NONE
+" todo autocmd InsertEnter * highlight User1 ctermfg=black ctermbg=darkblue cterm=NONE cterm=NONE
+" todo autocmd InsertEnter * highlight User1 guifg=black guibg=#3465a4 gui=NONE gui=NONE
+
+autocmd InsertEnter * highlight User1 ctermfg=black ctermbg=darkblue cterm=NONE cterm=NONE
 autocmd InsertEnter * highlight User1 guifg=black guibg=#84a598 gui=NONE gui=NONE
 
-autocmd InsertEnter * highlight User2 ctermfg=lightblue ctermbg=NONE cterm=NONE
+autocmd InsertEnter * highlight User2 ctermfg=darkblue ctermbg=NONE cterm=NONE
 autocmd InsertEnter * highlight User2 guifg=#84a598 guibg=NONE gui=NONE
 
-autocmd InsertLeave * highlight User1 ctermfg=black ctermbg=250 cterm=NONE
+" autocmd InsertEnter * highlight User8 ctermfg=black ctermbg=darkblue cterm=NONE
+" autocmd InsertEnter * highlight User8 guifg=black guibg=blue gui=NONE
+
+autocmd InsertLeave * highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE
 autocmd InsertLeave * highlight User1 guifg=black guibg=#a89985 gui=NONE
 
-autocmd InsertLeave * highlight User2 ctermfg=250 ctermbg=NONE cterm=NONE
+autocmd InsertLeave * highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE
 autocmd InsertLeave * highlight User2 guifg=#a89985 guibg=NONE gui=NONE
 
-highlight User1 ctermfg=black ctermbg=250 cterm=NONE    " bal oldal normál szöveg
+" autocmd InsertLeave * highlight User8 ctermfg=black ctermbg=darkyellow cterm=NONE
+" autocmd InsertLeave * highlight User8 guifg=black guibg=#c4a000 gui=NONE
+
+" státuszsor színei
+" todo highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE    " bal oldal normál szöveg
+" todo highlight User1 guifg=black guibg=#c4a000 gui=NONE          " bal oldal normál szöveg
+
+highlight User1 ctermfg=black ctermbg=darkyellow cterm=NONE    " bal oldal normál szöveg
 highlight User1 guifg=black guibg=#a89985 gui=NONE          " bal oldal normál szöveg
 
-highlight User2 ctermfg=250 ctermbg=NONE cterm=NONE     " bal oldal záróelem
+highlight User2 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " bal oldal záróelem
 highlight User2 guifg=#a89985 guibg=NONE gui=NONE           " bal oldal záróelem
 
-highlight User3 ctermfg=black ctermbg=250 cterm=NONE    " jobb oldal normál szöveg
+highlight User3 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal normál szöveg
 highlight User3 guifg=black guibg=#a89985 gui=NONE          " jobb oldal normál szöveg
 
-highlight User4 ctermfg=250 ctermbg=NONE cterm=NONE     " jobb oldal záróelem
+highlight User4 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " jobb oldal záróelem
 highlight User4 guifg=#a89985 guibg=NONE gui=NONE           " jobb oldal záróelem
 
-highlight User5 ctermfg=black ctermbg=250 cterm=NONE    " jobb oldal elválasztó
+highlight User5 ctermfg=black ctermbg=darkyellow cterm=NONE    " jobb oldal elválasztó
 highlight User5 guifg=black guibg=#a89985 gui=NONE          " jobb oldal elválasztó
 
-highlight User6 ctermfg=242 ctermbg=NONE cterm=NONE     " alap másodlagos
-highlight User6 guifg=#887965 guibg=NONE gui=NONE           " alap másodlagos
+highlight User6 ctermfg=darkyellow ctermbg=NONE cterm=NONE     " alap másodlagos
+highlight User6 guifg=#a89985 guibg=NONE gui=NONE           " alap másodlagos
 
 highlight User7 ctermfg=darkgrey ctermbg=black cterm=NONE      " inkatív elválasztó
 highlight User7 guifg=#555753 guibg=#2e3436 gui=NONE            " inkatív elválasztó
@@ -613,7 +598,7 @@ let &statusline="%1*"
                \."%*"
                \."%2*▶\ %*"
                \."%6*"
-               \."%{exists('g:loaded_fugitive')?''.fugitive#head(20).' ':''}"
+               \."%{exists('g:loaded_fugitive')?''.fugitive#head().' ':''}"
                \."%*"
                \."%<"
                \."%f"
@@ -706,29 +691,9 @@ autocmd BufRead,BufNewFile *.json setf json
 "bundle/rename                                   "rename a buffer within Vim and on the disk
 "bundle/camelcasemotion                          "motion through CamelCaseWords and underscore_notation
 "bundle/vim-backbone                             "Lightweight bag of Vim utilities for Backbone
-"bundle/vim-projectionist                        "Quickly edit project files using the .projections.json format
-"bundle/gruvbox                                  "Retro groove color scheme for Vim
-"bundle/vim-bootstrap4-snippets                  "Bootstrap 4 markup snippets for Vim
-"bundle/vim-exchange                             "Easy text exchange operator for Vim
-"bundle/vorg                                     "The plain text organizer for ViM
-"bundle/vim-css3-syntax                          "CSS3 syntax (and syntax defined in some foreign specifications) support
-"bundle/vim-sass-colors                          "Highlight sass colors and color variables
-"bundle/scss-syntax.vim                          "Vim syntax file for scss (Sassy CSS)
-"bundle/vim-better-javascript-completion         "An expansion of Vim's current JavaScript syntax file
-"bundle/textobj-word-column.vim                  "Adds text-objects for word-based columns in Vim
-"bundle/vim-indent-object                        "defines a new text object representing lines of code at the same indent level
 
 "bundle/mustache                                 "mustache and handlebars mode for vim
 let g:mustache_abbreviations = 1
-
-"bundle/vim-textobj-user                         "Create your own text objects
-call textobj#user#plugin('mustachevalue', {
-\   'code': {
-\     'pattern': ['}}', '{{'],
-\     'select-a': 'aT',
-\     'select-i': 'iT',
-\   },
-\ })
 
 "bundle/javascript-libraries-syntax.vim          "syntax for JavaScript libraries
 let g:used_javascript_libs = 'jquery,underscore,backbone'
@@ -757,7 +722,6 @@ map z*  <Plug>(asterisk-z*)
 map gz* <Plug>(asterisk-gz*)
 map z#  <Plug>(asterisk-z#)
 map gz# <Plug>(asterisk-gz#)
-let g:asterisk#keeppos = 0
 
 "bundle/vim-over
 nnoremap g/ :OverCommandLine<CR>%s//
@@ -830,12 +794,11 @@ nnoremap <silent> d<Space> :StripWhitespace<CR>
 autocmd FileType sql set commentstring=--\ %s
 
 "bundle/syntastic                                "syntax checking hacks for vim
-let g:syntastic_enable_signs = 1                 "mark lines with errors and warnings in the sign column
-let g:syntastic_auto_jump = 2                    "jumping to the first error reported by a check
+let g:syntastic_enable_signs=1                   "mark lines with errors and warnings in the sign column
+let g:syntastic_auto_jump=2                      "jumping to the first error reported by a check
 
 "bundle/vim_json                                 "better JSON: highlighting, JSON-specific (non-JS) warnings, quote concealing
 highlight link jsonKeyword Special
-let g:vim_json_syntax_conceal = 0
 
 "bundle/open-browser                             "open URI/URL with default browser
 let g:netrw_nogx = 1                             "disable netrw's gx mapping
@@ -890,7 +853,6 @@ autocmd FileType xhtml,xml source ~/.vim/plugin/html_autoclosetag.vim
 "}}}
 "{{{ Javascript
 autocmd FileType javascript setlocal iskeyword-=.
-autocmd BufNewFile,BufRead,BufEnter *.js normal zR
 "}}}
 "{{{ CSS, Scss  and LessCSS
 
@@ -1087,7 +1049,7 @@ command! WQ wq
 nnoremap <silent> Í :tab drop Dropbox/todo/todo.txt<CR>
 
 "edit a new memo.txt file, or jump to the window containing it if it already exists
-nnoremap <silent> í :tab drop temp/memo.vorg<CR>
+nnoremap <silent> í :tab drop temp/memo.txt<CR>
 
 "private keywords abbreviations
 source ~/.vim/abbreviation_private.vim
@@ -1096,9 +1058,5 @@ source ~/.vim/abbreviation_private.vim
 if filereadable(expand("\~/.vimrc.local"))
   source \~/.vimrc.local
 endif
-
-" Conceal hyperlinks in .md files
-autocmd BufNewFile,BufRead,BufEnter *.md syn match Concealed '\](.*)' conceal cchar=]
-autocmd BufNewFile,BufRead,BufEnter *.md set conceallevel=1
 
 "}}}
