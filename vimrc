@@ -52,7 +52,7 @@ set novisualbell                                 "use visual bell instead of bee
 set ruler                                        "show the line and column number of the cursor position
 set rulerformat=%-14.(%l,%c%V%)\ %P              "determines the content of the ruler string
 
-set hidden                                       "hide buffers when they are abandoned
+set nohidden                                     "NO hide buffers when they are abandoned
 
 set backspace=indent,eol,start                   "allow backspacing over autoindent, line breaks, start of insert
 " set whichwrap=b,s,<,>,[,]                        "allow BS,Space,Left/Right keys that move the cursor the previous/next line when the cursor is on the end of the line
