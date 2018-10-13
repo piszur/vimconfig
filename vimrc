@@ -717,6 +717,8 @@ autocmd BufRead,BufNewFile *.json setf json
 "bundle/vim-better-javascript-completion         "An expansion of Vim's current JavaScript syntax file
 "bundle/textobj-word-column.vim                  "Adds text-objects for word-based columns in Vim
 "bundle/vim-indent-object                        "defines a new text object representing lines of code at the same indent level
+"bundle/vim-indent-object                        "defines a new text object representing lines of code at the same indent level
+"bundle/agrep                                    "Asynchronous grep plugin for Vim
 
 "bundle/mustache                                 "mustache and handlebars mode for vim
 let g:mustache_abbreviations = 1
