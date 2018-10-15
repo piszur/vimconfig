@@ -60,6 +60,9 @@ set backspace=indent,eol,start                   "allow backspacing over autoind
 set showmatch                                    "when a bracket is inserted, briefly jump to the matching one
 set ignorecase                                   "the case of normal letters is ignored in search pattern
 set smartcase                                    "override 'ignorecase' if the search pattern contains upper case characters
+if version >= 800
+  set tagcase=followscs                            "follow the 'smartcase' and 'ignorecase' options when searching in tags files
+endif
 set report=0                                     "always report number of lines changed (message will be given for ":" commands)
 
 set incsearch                                    "find the next match as we type the search
@@ -281,6 +284,7 @@ set smarttab                                     "a <Tab> in front of a line ins
 
 set nowrap                                       "dont wrap lines
 autocmd FileType text setlocal wrap              "wrap lines in text file
+set breakindent                                  "wrapped line repeats indent
 
 set linebreak                                    "wrap lines at convenient points
 set showbreak=+++                                "string to put at the start of lines that have been wrapped.
