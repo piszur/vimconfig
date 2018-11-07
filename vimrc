@@ -35,6 +35,8 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 
 "filetype specific setting
+autocmd BufNewFile,BufRead *.sass setfiletype sass
+autocmd BufNewFile,BufRead *.scss setfiletype sass
 autocmd BufNewFile,BufRead *.sql setfiletype pgsql
 " autocmd BufNewFile,BufRead *.sql setfiletype sqlanywhere
 autocmd BufRead,BufNewFile jquery.*.js set filetype=javascript syntax=jquery
@@ -837,7 +839,21 @@ autocmd FileType sql set commentstring=--\ %s
 
 "bundle/syntastic                                "syntax checking hacks for vim
 let g:syntastic_enable_signs = 1                 "mark lines with errors and warnings in the sign column
-let g:syntastic_auto_jump = 2                    "jumping to the first error reported by a check
+let g:syntastic_auto_jump = 0                    "jumping to the first error reported by a check
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'eslint'
+let g:syntastic_sass_checkers=['sass']
+let g:syntastic_scss_checkers=['scss']
+" let g:syntastic_sass_sass_exe = 'sass-lint -v -q'
+" let g:syntastic_scss_scss_exe = 'sass-lint -v -q'
+
+" let g:syntastic_debug=3
 
 "bundle/vim_json                                 "better JSON: highlighting, JSON-specific (non-JS) warnings, quote concealing
 highlight link jsonKeyword Special
@@ -905,7 +921,7 @@ augroup ft_css
   autocmd!
 
   autocmd BufNewFile,BufRead *.less setlocal filetype=less
-  autocmd BufNewFile,BufRead *.scss setlocal filetype=css
+  " autocmd BufNewFile,BufRead *.scss setlocal filetype=sass
 
   autocmd Filetype scss,less,css setlocal foldmethod=marker
   autocmd Filetype scss,less,css setlocal foldmarker={,}
@@ -1108,3 +1124,6 @@ autocmd BufNewFile,BufRead,BufEnter *.md syn match Concealed '\](.*)' conceal cc
 autocmd BufNewFile,BufRead,BufEnter *.md set conceallevel=1
 
 "}}}
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
