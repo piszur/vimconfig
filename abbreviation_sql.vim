@@ -3,6 +3,7 @@ autocmd FileType sql :iabbrev <buffer> idf IS DISTINCT FROM
 autocmd FileType sql :iabbrev <buffer> indf IS NOT DISTINCT FROM
 autocmd FileType sql :iabbrev <buffer> ttz timestamp with time zone
 autocmd FileType sql :iabbrev <buffer> tswtz timestamp with time zone
+autocmd FileType sql :iabbrev <buffer> nn NOT NULL
 
 autocmd FileType sql :iabbrev <buffer> insert INSERT
 autocmd FileType sql :iabbrev <buffer> values VALUES

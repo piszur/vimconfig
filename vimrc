@@ -32,9 +32,12 @@ autocmd FileType html,markdown,mustache,handlebars setlocal omnifunc=htmlcomplet
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+inoremap <C-Tab> <C-x><C-o>
 
 
 "filetype specific setting
+autocmd BufNewFile,BufRead *.sass setfiletype sass
+autocmd BufNewFile,BufRead *.scss setfiletype sass
 autocmd BufNewFile,BufRead *.sql setfiletype pgsql
 " autocmd BufNewFile,BufRead *.sql setfiletype sqlanywhere
 autocmd BufRead,BufNewFile jquery.*.js set filetype=javascript syntax=jquery
@@ -52,7 +55,7 @@ set novisualbell                                 "use visual bell instead of bee
 set ruler                                        "show the line and column number of the cursor position
 set rulerformat=%-14.(%l,%c%V%)\ %P              "determines the content of the ruler string
 
-set hidden                                       "hide buffers when they are abandoned
+set nohidden                                     "NO hide buffers when they are abandoned
 
 set backspace=indent,eol,start                   "allow backspacing over autoindent, line breaks, start of insert
 " set whichwrap=b,s,<,>,[,]                        "allow BS,Space,Left/Right keys that move the cursor the previous/next line when the cursor is on the end of the line
@@ -60,6 +63,9 @@ set backspace=indent,eol,start                   "allow backspacing over autoind
 set showmatch                                    "when a bracket is inserted, briefly jump to the matching one
 set ignorecase                                   "the case of normal letters is ignored in search pattern
 set smartcase                                    "override 'ignorecase' if the search pattern contains upper case characters
+if version >= 800
+  set tagcase=followscs                            "follow the 'smartcase' and 'ignorecase' options when searching in tags files
+endif
 set report=0                                     "always report number of lines changed (message will be given for ":" commands)
 
 set incsearch                                    "find the next match as we type the search
@@ -151,6 +157,8 @@ endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <C-W>u :ZoomToggle<CR>
 
+command! -nargs=* Make make <args> | cwindow 8
+nnoremap <silent> <F7> :make<CR>
 "}}}
 "{{{ navigation
 
@@ -184,7 +192,10 @@ nnoremap <Tab><Space> :.,/todo\\|fixme/
 
 "open Quickfix List window bottom and occupy the full width of the Vim window
 " autocmd! BufEnter,BufRead,BufNewFile,BufReadPost  * :if &buftype is# 'quickfix' | nnoremap <Space><Space> :cclose<cr> | else | nnoremap <Space><Space> :botright copen 20<cr> | endif
-autocmd! BufEnter,BufRead,BufNewFile,BufReadPost  * :if &buftype is# 'quickfix' | nnoremap qq :cclose<cr>  | nnoremap <Space><Space> :lclose<cr>| else | nnoremap qq :botright copen 20<cr> | nnoremap <Space><Space> :lopen<cr>| endif
+autocmd! BufEnter,BufRead,BufNewFile,BufReadPost * :if &buftype is# 'quickfix' | nnoremap qq :cclose<cr>  | nnoremap <Space><Space> :lclose<cr>| else | nnoremap qq :botright copen 20<cr> | nnoremap <Space><Space> :lopen<cr>| endif
+
+"<Leader><CR> open current file to the new tab (in Quickfix List window)
+autocmd BufEnter,BufRead,BufNewFile,BufReadPost * :if &buftype is# 'quickfix' | nnoremap <buffer> <Leader><CR> :tabnew\|cc <C-r>=line(".")<CR><CR>gT| endif
 
 "moving cursor after the next |
 " nnoremap <Tab>| /|/e+1<cr>
@@ -281,6 +292,7 @@ set smarttab                                     "a <Tab> in front of a line ins
 
 set nowrap                                       "dont wrap lines
 autocmd FileType text setlocal wrap              "wrap lines in text file
+set breakindent                                  "wrapped line repeats indent
 
 set linebreak                                    "wrap lines at convenient points
 set showbreak=+++                                "string to put at the start of lines that have been wrapped.
@@ -326,6 +338,23 @@ nnoremap Vaa ggVG
 "minden másolása rendszervágólapra 'a-tól 'z-ig
 nnoremap yz mtg'a"+yg'zg`t
 nnoremap <C-y>z mtg'a"+yg'zg`t
+
+"}}}
+"{{{ text objects
+
+" in line (entire line sans white-space; cursor at beginning--ie, ^)
+xnoremap <silent> il :<c-u>normal! g_v^<cr>
+onoremap <silent> il :<c-u>normal! g_v^<cr>
+" around line (entire line sans trailing newline; cursor at beginning--ie, 0)
+xnoremap <silent> al :<c-u>normal! $v0<cr>
+onoremap <silent> al :<c-u>normal! $v0<cr>
+
+" mustache custom function value
+xnoremap <silent> im :<c-u>normal! t{vT}<cr>
+onoremap <silent> im :<c-u>normal! t{vT}<cr>
+" mustache custom function
+xnoremap <silent> am :<c-u>normal! f}lvF{hF{h<cr>
+onoremap <silent> am :<c-u>normal! f}lvF{hF{h<cr>
 
 "}}}
 "{{{ search and replace
@@ -588,8 +617,8 @@ highlight User3 guifg=black guibg=#a89985 gui=NONE          " jobb oldal normál
 highlight User4 ctermfg=250 ctermbg=NONE cterm=NONE     " jobb oldal záróelem
 highlight User4 guifg=#a89985 guibg=NONE gui=NONE           " jobb oldal záróelem
 
-highlight User5 ctermfg=black ctermbg=250 cterm=NONE    " jobb oldal elválasztó
-highlight User5 guifg=black guibg=#a89985 gui=NONE          " jobb oldal elválasztó
+highlight User5 ctermfg=17 ctermbg=250 cterm=NONE    " jobb oldal elválasztó
+highlight User5 guifg=#000080 guibg=#a89985 gui=NONE          " jobb oldal elválasztó
 
 highlight User6 ctermfg=242 ctermbg=NONE cterm=NONE     " alap másodlagos
 highlight User6 guifg=#887965 guibg=NONE gui=NONE           " alap másodlagos
@@ -606,6 +635,9 @@ highlight User9 guifg=lightgrey guibg=#555753 gui=NONE        " inaktív bal old
 " statusline:
 let &statusline="%1*"
                \."%n\ "
+               \."%5*"
+               \."%{ObsessionStatus()}\ "
+               \."%1*"
                \."〉"
                \."%m"
                \."%R\ "
@@ -690,9 +722,6 @@ endfunction
 "plugin/highlight_matches.vim                    "rewires n and N to do the highlighing...
 "plugin/visualstar.vim                           "allows you to select some text using Vim's visual mode and then hit * and #
 "plugin/matchit.vim                              "allows you to configure % to match more than just single characters
-"plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
-autocmd BufRead,BufNewFile *.json setf json
-
 "bundle/vim-repeat                               "use the repeat command (.) with supported plugins
 "bundle/vim-snipmate                             "using TextMate-style snippets in Vim (in vim-snippets and bob_snippets)
 "bundle/vim-addon-mw-utils                       "interpret a file by function and cache file automatically (snipmate dependency)
@@ -702,6 +731,7 @@ autocmd BufRead,BufNewFile *.json setf json
 "bundle/vim-abolish                              "easily search for, substitute, and abbreviate multiple variants of a word
 "bundle/vim-surround                             "delete/change/add parentheses/quotes/XML-tags/much more with ease
 "bundle/vim-javascript                           "vastly improved Javascript indentation and syntax support in Vim
+"bundle/vim-jdaddy                               "JSON manipulation and pretty printing
 "bundle/tabular                                  "text filtering and alignment
 "bundle/rename                                   "rename a buffer within Vim and on the disk
 "bundle/camelcasemotion                          "motion through CamelCaseWords and underscore_notation
@@ -717,6 +747,20 @@ autocmd BufRead,BufNewFile *.json setf json
 "bundle/vim-better-javascript-completion         "An expansion of Vim's current JavaScript syntax file
 "bundle/textobj-word-column.vim                  "Adds text-objects for word-based columns in Vim
 "bundle/vim-indent-object                        "defines a new text object representing lines of code at the same indent level
+"bundle/vim-indent-object                        "defines a new text object representing lines of code at the same indent level
+"bundle/agrep                                    "Asynchronous grep plugin for Vim
+"bundle/vim-gitgutter                            "shows a git diff in the gutter (sign column) and stages/undoes hunks
+"bundle/vim-obsession                            "continuously updated session files
+"bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
+
+"plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
+autocmd BufRead,BufNewFile *.json setfiletype json
+
+"bundle/simpledb
+let g:simpledb_use_default_keybindings=0
+" vnoremap <buffer> <c-q> :SimpleDBExecuteSql<cr>
+" nnoremap <buffer> <c-q> m':SimpleDBExecuteSql <cr>g`'
+" nnoremap <buffer> <leader><c-q> m':'{,'}SimpleDBExecuteSql<cr>g`'
 
 "bundle/mustache                                 "mustache and handlebars mode for vim
 let g:mustache_abbreviations = 1
@@ -792,10 +836,26 @@ let g:bufExplorerSplitHorzSize=20                "new split window is n rows hig
 nnoremap <silent> <Tab>00 :BufExplorerHorizontalSplit<CR>
 
 "bundle/nerdtree                                 "a tree explorer plugin for navigating the filesystem
+nmap <Leader><Return> :NERDTreeToggle<CR>
+nmap <Leader><Leader><Return> :execute (exists("b:NERDTree") ?  'NERDTreeToggle' : 'NERDTree '.expand("%:h").'/')<CR>
 let NERDTreeIgnore=['\.sw.\?$', '\~$']
 
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
+"bundle/nerdtree-git-plugin                      "NERDTree showing git status
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
+let g:NERDTreeShowIgnoredStatus = 1
 
 "bundle/vim-speeddating                          "use CTRL-A/CTRL-X to increment dates, times, and more
 autocmd BufEnter * :SpeedDatingFormat %y.%m.%d
@@ -831,7 +891,21 @@ autocmd FileType sql set commentstring=--\ %s
 
 "bundle/syntastic                                "syntax checking hacks for vim
 let g:syntastic_enable_signs = 1                 "mark lines with errors and warnings in the sign column
-let g:syntastic_auto_jump = 2                    "jumping to the first error reported by a check
+let g:syntastic_auto_jump = 0                    "jumping to the first error reported by a check
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_eslint_exe = 'eslint'
+let g:syntastic_sass_checkers=['sass']
+let g:syntastic_scss_checkers=['scss']
+" let g:syntastic_sass_sass_exe = 'sass-lint -v -q'
+" let g:syntastic_scss_scss_exe = 'sass-lint -v -q'
+
+" let g:syntastic_debug=3
 
 "bundle/vim_json                                 "better JSON: highlighting, JSON-specific (non-JS) warnings, quote concealing
 highlight link jsonKeyword Special
@@ -890,6 +964,7 @@ autocmd FileType xhtml,xml source ~/.vim/plugin/html_autoclosetag.vim
 "}}}
 "{{{ Javascript
 autocmd FileType javascript setlocal iskeyword-=.
+autocmd FileType javascript setlocal iskeyword+=-
 autocmd BufNewFile,BufRead,BufEnter *.js normal zR
 "}}}
 "{{{ CSS, Scss  and LessCSS
@@ -899,11 +974,10 @@ augroup ft_css
   autocmd!
 
   autocmd BufNewFile,BufRead *.less setlocal filetype=less
-  autocmd BufNewFile,BufRead *.scss setlocal filetype=css
+  " autocmd BufNewFile,BufRead *.scss setlocal filetype=sass
 
   autocmd Filetype scss,less,css setlocal foldmethod=marker
   autocmd Filetype scss,less,css setlocal foldmarker={,}
-  " autocmd Filetype scss,less,css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd Filetype scss,less,css setlocal iskeyword+=-
 
   "use <Leader>S to sort properties:
@@ -927,7 +1001,8 @@ augroup json_autocmd
 augroup END
 
 "}}}
-"{{{ templater settings
+"{{{ html and template settings
+autocmd FileType html,mustache,handlebars,tt2,tt2html setlocal iskeyword+=-
 
 autocmd BufNewFile,BufRead *.tmpl call s:AdjustTT2Type()
 autocmd BufNewFile,BufRead *.tt call s:AdjustTT2Type()
@@ -972,9 +1047,21 @@ autocmd BufEnter **/.git/COMMIT_EDITMSG %s/#\t/\t/ | normal gg9j
 
 autocmd BufNewFile **/global/dbxml/*.xml 0r ~/.vim/skeletons/dbxml.xml | :%foldopen
 autocmd BufNewFile **/global/sql/*.sql 0r ~/.vim/skeletons/sql.sql | 7j
-autocmd BufNewFile *.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile **/global/sqldata/*.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile **/global/xmlschema/*/history.xml 0r ~/.vim/skeletons/history.txt
+
+autocmd BufNewFile **/sql/orig/*.sql 0r ~/.vim/skeletons/sql.orig.sql
+autocmd BufNewFile **/sql/orig_api/*\.ls_*.sql 0r ~/.vim/skeletons/sql.ls.sql
+autocmd BufNewFile **/sql/orig_api/*\.list*.sql 0r ~/.vim/skeletons/sql.list.sql
+autocmd BufNewFile **/sql/orig_api/*\.hs*.sql 0r ~/.vim/skeletons/sql.hs.sql
+autocmd BufNewFile **/sql/orig_api/*\.create_*.sql 0r ~/.vim/skeletons/sql.create.sql
+autocmd BufNewFile **/sql/orig_api/*\.update_*.sql 0r ~/.vim/skeletons/sql.update.sql
+autocmd BufNewFile **/sql/orig_api/*\.delete_*.sql 0r ~/.vim/skeletons/sql.delete.sql
+autocmd BufNewFile **/sql/orig_api/*\.undelete_*.sql 0r ~/.vim/skeletons/sql.undelete.sql
+autocmd BufNewFile **/sql/orig_api/*\.search_*.sql 0r ~/.vim/skeletons/sql.search.sql
+autocmd BufNewFile **/sql/orig_api/*\.searchrecent_*.sql 0r ~/.vim/skeletons/sql.searchrecent.sql
+autocmd BufNewFile **/sql/orig_api/*\.select_*.sql 0r ~/.vim/skeletons/sql.select.sql
+" autocmd BufNewFile *.sql 0r ~/.vim/skeletons/sql.sql | 7j
 autocmd BufNewFile *.html 0r ~/.vim/skeletons/html.html | 14j$
 
 " autocmd BufRead **/global/sql/*.sql silent! normal gg/--\/\*\{4\}.\* SQL\//e+1ma
@@ -1075,6 +1162,9 @@ inoremap <expr> <C-b>s (split(expand("%:p"),"/")[1] == 'fejleszto') ? "/".join(s
 cnoremap <expr> <C-b>S (getcmdtype() == ':' && split(expand("%:p"),"/")[1] == 'fejleszto') ? "/home/fejleszto/munka/bob4/core/Bob/sql/" : ''
 inoremap <expr> <C-b>S (split(expand("%:p"),"/")[1] == 'fejleszto') ? "/home/fejleszto/munka/bob4/core/Bob/sql/" : ''
 
+
+autocmd BufRead,BufNewFile **/src/server/*.conf set filetype=perl
+autocmd BufRead,BufNewFile **/src/server/*.conf setfiletype perl
 "}}}
 "{{{ private settings
 
@@ -1102,3 +1192,6 @@ autocmd BufNewFile,BufRead,BufEnter *.md syn match Concealed '\](.*)' conceal cc
 autocmd BufNewFile,BufRead,BufEnter *.md set conceallevel=1
 
 "}}}
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
