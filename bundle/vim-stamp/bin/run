@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# This script runs an instance of Neovim with only the stamp plugin. This is useful for testing the
+# plugin behavior.
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+# This is a simplified Vim configuration that's used to test the stamp plugin. This was taken from
+# the Vader instructions on setting up an isolated testing environment.
+# https://github.com/junegunn/vader.vim#setting-up-isolated-testing-environment
+VIMRC=$(cat <<EOF
+set runtimepath=~/.vim/bundle/vader.vim,~/.vim/bundle/vim-repeat,$("pwd")
+EOF
+)
+
+# Run the test suite in Neovim without any plugins and with a barebones .vimrc file.
+nvim -u <(echo "$VIMRC") "$@"

@@ -370,6 +370,10 @@ vnoremap // "sy:%S/<C-r>s//gc<Left><Left><Left>
 noremap /// "syiw:%S/<C-r>s/<C-r>s/gc<Left><Left><Left>
 vnoremap /// "sy:%S/<C-r>s/<C-r>s/gc<Left><Left><Left>
 
+"replace a match of word nearest to the cursor
+noremap /= /^>>>>\\|^====\\|^<<<<<CR>
+vnoremap /= /^>>>>\\|^====\\|^<<<<<CR>
+
 "count a match of word nearest to the cursor
 nnoremap ?? :%s/\<<C-R><C-W>\>/&/gn<CR>
 vnoremap ?? y:%s/\<<C-R>"\>/&/gn<CR>
