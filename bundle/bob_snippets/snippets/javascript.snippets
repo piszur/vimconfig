@@ -1,7 +1,7 @@
 snippet log
 	console.log( '${1:todo}', ${0:$1} );
 snippet clog
-	console.log( '%c ${1:todo}','color:${2:red};', ${0:$1} );
+	console.log( '%c ${1:todo}','color:${2:red};font-weight:${3:normal}', ${0:$1} );
 snippet i18n
 	$.i18n( ${0} )
 snippet eventBreaking
@@ -15,7 +15,7 @@ snippet :{
 	  ${0}
 	}${2:,}
 snippet self
-	var self = this;
+	const self = this;
 snippet toJSON
 	${0:obj}.toJSON()
 snippet listenTo
