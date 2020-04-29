@@ -1,0 +1,24 @@
+snippet log
+	console.log( '${1:todo}', ${0:$1} );
+snippet clog
+	console.log( '%c ${1:todo}','color:${2:red};font-weight:${3:normal}', ${0:$1} );
+snippet i18n
+	$.i18n( ${0} )
+snippet eventBreaking
+	e.preventDefault();
+	e.stopPropagation();
+	${1}
+snippet $ready
+	$(document).reaady(function(){${0}});
+snippet :{
+	${1:attr_name}: {
+	  ${0}
+	}${2:,}
+snippet self
+	const self = this;
+snippet toJSON
+	${0:obj}.toJSON()
+snippet listenTo
+	${1:obj}.listenTo( ${2:target_obj}, '${3:event}', function(${4:e}) {
+	  ${0:// event handler}
+	});

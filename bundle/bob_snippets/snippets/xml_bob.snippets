@@ -1,0 +1,110 @@
+snippet html7
+	<!DOCTYPE html>${1:alma}
+	  <title>${2:`s:uppercase($1)`}</title>
+	</html>
+snippet html6
+	<!DOCTYPE html>${2:`vim_snippets#Filename()`}
+	  <title>${1:aabb}</title>$${3}
+	</html>($1)${4}
+snippet html5
+	<!DOCTYPE html>
+	<html>
+	  <head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width">
+	  <title>${1:`substitute(vim_snippets#Filename('', 'Page Title'), '^.', '\u&', '')`}</title>
+	  ${2:meta}
+	 </head>
+	  <body>
+	  ${0:body}
+	  </body>
+	</html>
+snippet ac
+	<a href="`@+`">${0:`@+`}</a>
+# dbxml Entity preferences
+snippet entity
+	<entity wiki_name = "${1:TableName}"
+	  standard_name = "${4:$1}"
+	  name = "${2:nev}"
+	  names = "${3:$2ek}"/>${0}
+# dbxml Column preferences
+snippet column
+	<column name = "${1:oszlop_neve}"
+	  type = "${2:timestamp with time zone}"
+	  not_null = "${3:NOT NULL}"
+	  default = "${4}"
+	  comment = "${5:oszlop leirasa}"
+	  example = "${6}"
+	  visibility = "${7:hidden}"
+	  id = "${8:1}">
+	</column>${0}
+# dbxml Foreign key reference
+snippet references
+	<references schema = "${1:public}"
+	  table  = "${2:table_name}"
+	  column = "${3:id}"
+	  get_status = ""
+	  update = "${4:RESTRICT}"
+	  delete = "${5:CASCADE}"/>${6}
+# dbxml Constraint (CHECK/UNIQUE)
+snippet constraint
+	<constraint type = "${1:CHECK}"
+	  label = "${2:címke (például mező neve)}"
+	  param = "${3:$2 paraméterei}"
+	  comment = "${4:$2 szabályának leírása a dokumentációba}"
+	  id = "${5:sorrend}"/>${0}
+# dbxml Trigger function
+snippet function
+	<function>
+	  TODO: hibakódok kiegészítése
+	<errorcode id = "1" comment="a név nem lehet üres string"/>
+	  TODO: triggerek megadása
+	  <trigger when = "BEFORE"
+	    op = "INSERT OR UPDATE OR DELETE"
+	    id = "1"/>
+	  <trigger when = "AFTER"
+	    op = "INSERT OR UPDATE OR DELETE"
+	    id = "2"/>
+	  <notes><![CDATA[
+	    ${1:synopsis, pl: A név típusú mezőket trimmeli, azaz levágja a szöveg eleji és végi szóközöket, valamint törli a dupla szóközöket.}
+	  ]]></notes>
+	  <![CDATA[
+	    logParams public.log_params_type;     -- paraméterek log írásához
+	    logMsg varchar := '';                 -- logba szánt üzenet
+	    tmpID integer;                        -- ideiglenes mező azonosítók tárolásához
+	    myEID integer;
+	    myUserID integer;
+	    tableName varchar;                    -- séma + táblanév
+	    myQuery varchar;
+	    myAnswer integer;
+	  BEGIN
+	    tableName := TG_TABLE_SCHEMA::varchar || '.' || TG_RELNAME::varchar;
+
+	    IF TG_LEVEL = 'ROW' AND TG_WHEN = 'BEFORE' THEN
+
+	    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+	      SELECT CAST( ROW(tableName, TG_OP, NEW.id, NEW.lock_account_name, NEW.lock_modul_label, NEW.lock_user_id ) AS public.log_params_type ) INTO logParams;
+	      myEID := coalesce(NEW.eid,NEW.id);
+	      myUserID := coalesce(NEW.lock_user_id,NEW.modification_user_id,NEW.creation_user_id);
+	    END IF; -- IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+
+	    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+	      NEW.short_name := NULLIF(my_strnorm( 1, NEW.short_name ),'');
+	      NEW.full_name := NULLIF(my_strnorm( 1, NEW.full_name ),'');
+
+	      IF NEW.short_name = '' THEN
+	        PERFORM public.bob_syslog( 2, logParams, '${3:public}_${2:table_name}_001' );
+	      END IF; -- IF NEW.short_name = '' THEN
+	      IF NEW.full_name = '' THEN
+	        PERFORM public.bob_syslog( 2, logParams, '$3_$2_002' );
+	      END IF; -- IF NEW.full_name = '' THEN
+
+	      --  SELECT INTO tmpID id FROM $3.$2 WHERE $2.eid != myEID AND $2.short_name = NEW.short_name LIMIT 1;
+	      --  IF FOUND THEN
+	      --    PERFORM public.bob_syslog( 2, logParams, '$3_$2_003' );
+	      --  END IF; -- IF FOUND THEN
+	    END IF; -- IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+
+	  END IF; -- IF TG_LEVEL = 'ROW' AND TG_WHEN = 'BEFORE' THEN
+	  ]]>${0}
+	</function>

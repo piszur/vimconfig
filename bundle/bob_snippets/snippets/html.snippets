@@ -1,0 +1,141 @@
+snippet fa
+	<i class="fa fa-${0:home}"></i>
+snippet faa
+	<i class="fa fa-${1:home} faa-${0:flash} animated"></i>
+snippet i18n
+	{{#i18n}}${0:text}{{/i18n}}
+snippet #i18n
+	{{#i18n}}${0:text}{{/i18n}}
+snippet fieldset-input
+	<div class="col-${6:12}">
+	  <fieldset class="form-group field">
+	    <label for="$1" class="col-form-label" data-toggle="tooltip" data-placement="top" title="$4">
+	      <span>{{#i18n}}${4:Name of field}{{/i18n}}</span>
+	    </label>
+	    <div class="input-group">
+	      <input class="form-control" id="${1:fieldname}" name="${2:$1}" placeholder="{{#i18n}}${3}{{/i18n}}" type="text" value="{{$2}}">
+	    </div> <!-- input-group -->
+	    <div class="invalid-feedback"></div>
+	    <small class="form-text text-muted">${5}</small>
+	  </fieldset>
+	</div>${0}
+snippet fieldset-select
+	<div class="col-${4:12}">
+	  <fieldset class="form-group field">
+	    <label for="$1" class="col-form-label" data-toggle="tooltip" data-placement="top" title="$2">
+	      <span>{{#i18n}}${2:Name of field}{{/i18n}}</span>
+	    </label>
+	    <div class="input-group ${1:fieldname}SelectContainer">
+	    </div> <!-- input-group -->
+	    <div class="invalid-feedback"></div>
+	    <small class="form-text text-muted">${3}</small>
+	  </fieldset>
+	</div>${0}
+snippet fieldset-autocomplete
+	<div class="col-${5:12}">
+	  <fieldset class="form-group field">
+	    <label for="$1" class="col-form-label" data-toggle="tooltip" data-placement="top" title="$4">
+	      <span>{{#i18n}}${4:Name of field}{{/i18n}}</span>
+	    </label>
+	    <div class="input-group">
+	      <input class="form-control" id="${1:fieldname}" name="${2:$1}" placeholder="{{#i18n}}${3}{{/i18n}}" type="text" value="{{$2}}">
+		  <div class="$1AutocompleteContainer"></div>
+	    </div> <!-- input-group -->
+	    <div class="invalid-feedback"></div>
+	    <small class="form-text text-muted">${6}</small>
+	  </fieldset>
+	</div>${0}
+snippet fieldset-text
+	<div class="col-${4:12}">
+	  <fieldset class="form-group field">
+	    <label for="$1" class="col-form-label" data-toggle="tooltip" data-placement="top" title="$2">
+	      <span>{{#i18n}}${2:Name of field}{{/i18n}}</span>
+	    </label>
+	    <div class="input-group">
+	      <span id="$1">${1:fieldname}</span>
+	    </div> <!-- input-group -->
+	    <small class="form-text text-muted">${3}</small>
+	  </fieldset>
+	</div>${0}
+snippet fieldset-checkbox
+	<div class="col-${5:12}">
+	  <fieldset class="form-group field">
+	    <label for="$1" class="col-form-label" data-toggle="tooltip" data-placement="top" title="$4">
+	      <span>{{#i18n}}${3:Name of field}{{/i18n}}</span>
+	    </label>
+	    <div class="input-group pr-2 w-auto">
+	      <select class="form-control" id="${1:fieldname}" name="${2:$1}" data-field="checkbox">
+	        <option value="" selected="selected">{{#i18n}}no{{/i18n}}</option>
+	        <option value="1">{{#i18n}}yes{{/i18n}}</option>
+	      </select>
+	    </div> <!-- input-group -->
+	    <div class="invalid-feedback"></div>
+	    <small class="form-text text-muted">${4}</small>
+	  </fieldset>
+	</div>${0}
+snippet datafield-display
+	<div data-toggle="datafield" data-label="{{#i18n}}${2:$1}{{/i18n}}">
+	  {{${1:fieldname}}}
+	</div>${0}
+snippet datafield-edit
+	<div data-toggle="datafield" id="${1:fieldname}"
+	                             data-label="{{#i18n}}${2:$1}{{/i18n}}"
+	                             data-value="{{$1}}"
+	                             data-type="${3:text}">
+	</div>${0}
+snippet datafield-full
+	<div data-toggle="datafield" id="${1:fieldname}"
+	                             class="${2:col-12}"
+	                             data-method="${3:editable}"
+	                             data-class="${4:col-12 col-sm-6 col-md-12 col-lg-6}"
+	                             data-label="{{#i18n}}${5:$1}{{/i18n}}"
+	                             data-tooltip="${6:$5}"
+	                             data-name="${7:$1}"
+	                             data-value="{{$7}}"
+	                             data-placeholder=""
+	                             data-type="${8:text}">
+	  <span class="">{{$7}}${0}</span>
+	</div>
+snippet datafield-info
+	<div data-toggle="datafield" class="${4:col-12}"
+	                             data-method="${3:not-editable}"
+	                             data-label="{{#i18n}}${2:$1}{{/i18n}}">
+	  <span class="">{{${1:fieldname}}}${0}</span>
+	</div>
+snippet form-controller
+	<form action="#" id="edit-${1:entity}" class="form-container col-12 col-xl-10 row no-gutters" method="POST">
+	<div class="form-container ${1:col-12 col-xl-2}">
+	  card${0}
+	</form>
+snippet form-controller-div
+	<div class="form-container ${1:col-12 col-xl-2}">
+	  card${0}
+	</div>
+snippet card
+	<div class="card ${2:col-12 col-md-8 col-lg-6} mb-3">
+	  <h4 class="card-title mb-0">
+	    {{#i18n}}${1:Card title}{{/i18n}}
+	  </h4>
+
+	  card-body${0}
+	</div>
+snippet card-body
+	<div class="card-body row py-0 px-bob align-content-start"
+	     data-method="${2:editable}"
+	     data-class="${1:col-12 col-sm-6 col-md-12 col-lg-6}">
+
+	  datafield-${0}
+	</div>
+snippet card-footer
+	<div class="card col-12">
+	  <div class="card-footer text-right">
+	    <span class="footer-action">
+	      <button type="button" class="btn cancel-${1:entity} btn-secondary">
+	        <i class="fa fa-undo"></i> <span class="d-none d-sm-inline-block">{{#i18n}}Cancel{{/i18n}}</span>
+	      </button>
+	      <button type="button" class="btn save-$1 btn-primary">
+	        <i class="fa fa-upload"></i> <span class="d-none d-sm-inline-block">{{#i18n}}Save{{/i18n}}</span>
+	      </button>
+	    </span>
+	  </div>
+	</div>
