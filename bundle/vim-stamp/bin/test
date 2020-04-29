@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-# Run the tests using the simplified Neovim configuration.
-"$(dirname "$0")/run" --headless '+Vader! -q test/*.vader'
