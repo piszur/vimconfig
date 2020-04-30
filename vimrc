@@ -1039,9 +1039,6 @@ endfunc
 
 "see: bundle/bob_snippets                        "BOB specific snippets
 
-" preparate commit
-autocmd BufEnter **/.git/COMMIT_EDITMSG %s/#\t/\t/ | normal gg9j
-
 " run 'daráló'
 " map <C-S-F5> :!/home/fejleszto/munka/refresh_functions_fter.sh fter_kv^M
 " map <C-S-F6> :!/home/fejleszto/munka/refresh_functions_fter_bcs.sh fter^M
@@ -1066,7 +1063,7 @@ autocmd BufNewFile **/sql/orig_api/*\.search_*.sql 0r ~/.vim/skeletons/sql.searc
 autocmd BufNewFile **/sql/orig_api/*\.searchrecent_*.sql 0r ~/.vim/skeletons/sql.searchrecent.sql
 autocmd BufNewFile **/sql/orig_api/*\.select_*.sql 0r ~/.vim/skeletons/sql.select.sql
 " autocmd BufNewFile *.sql 0r ~/.vim/skeletons/sql.sql | 7j
-autocmd BufNewFile *.html 0r ~/.vim/skeletons/html.html | 14j$
+autocmd BufNewFile *.html 0r ~/.vim/skeletons/html.html
 
 " autocmd BufRead **/global/sql/*.sql silent! normal gg/--\/\*\{4\}.\* SQL\//e+1ma
 " autocmd BufRead **/global/sql/*.sql silent! normal gg/^\(DROP SEQUENCE\|BEGIN\)/mb
