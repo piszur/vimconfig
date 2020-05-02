@@ -151,9 +151,6 @@
 [submodule "bundle/vim-repeat"]
 	path = bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
-[submodule "bundle/vim-sass-colors"]
-	path = bundle/vim-sass-colors
-	url = https://github.com/shmargum/vim-sass-colors.git
 [submodule "bundle/vim-snipmate"]
 	path = bundle/vim-snipmate
 	url = https://github.com/garbas/vim-snipmate.git
@@ -178,3 +175,6 @@
 [submodule "bundle/vorg"]
 	path = bundle/vorg
 	url = https://github.com/rlofc/vorg.git
+[submodule "bundle/vim-es6"]
+	path = bundle/vim-es6
+	url = https://github.com/isRuslan/vim-es6.git
