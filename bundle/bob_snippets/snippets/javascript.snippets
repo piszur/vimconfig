@@ -8,12 +8,22 @@ snippet eventBreaking
 	e.preventDefault();
 	e.stopPropagation();
 	${1}
-snippet app.alert
-	app.showAlert([{type: '${1:danger}', title: $.i18n(${2:'title_text'}), message: $.i18n(${3:'message_text'})}]);
+snippet alert
+	app.showAlert([{type: '${1:success|info|warning|danger}', title: $.i18n(${2:'title_text'}), message: $.i18n(${3:'message_text'})}]);
 snippet app.showAlert
 	app.showAlert([{type: '${1:danger}', title: $.i18n(${2:'title_text'}), message: $.i18n(${3:'message_text'})}]);
 snippet app.errorHandler
-	app.errorHandler( ${1:r.result} );${0}
+	app.showAlert.errorHandler( ${1:r.result} );${0}
+snippet app.showAlert.errorHandler
+	app.showAlert.errorHandler( ${1:r.result} );${0}
+snippet app.showAlert.success
+	app.showAlert.success( ${1:message} );${0}
+snippet app.showAlert.info
+	app.showAlert.info( ${1:message} );${0}
+snippet app.showAlert.warning
+	app.showAlert.warning( ${1:message} );${0}
+snippet app.showAlert.danger
+	app.showAlert.danger( ${1:message} );${0}
 snippet app.eventChannelOn
 	app.eventChannel.on('${1:modul}:${2:label}', function(${3:p}){${0}} );
 snippet app.eventChannelReply
