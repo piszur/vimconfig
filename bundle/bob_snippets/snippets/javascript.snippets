@@ -8,6 +8,24 @@ snippet eventBreaking
 	e.preventDefault();
 	e.stopPropagation();
 	${1}
+snippet app.alert
+	app.showAlert([{type: '${1:danger}', title: $.i18n(${2:'title_text'}), message: $.i18n(${3:'message_text'})}]);
+snippet app.showAlert
+	app.showAlert([{type: '${1:danger}', title: $.i18n(${2:'title_text'}), message: $.i18n(${3:'message_text'})}]);
+snippet app.errorHandler
+	app.errorHandler( ${1:r.result} );${0}
+snippet app.eventChannelOn
+	app.eventChannel.on('${1:modul}:${2:label}', function(${3:p}){${0}} );
+snippet app.eventChannelReply
+	app.eventChannel.reply( '${1:modul}:${2:label}', function(){ return ${3:{ key:'value' }} } );
+snippet app.eventChannelRequest
+	app.eventChannel.request( '${1:modul}:${2:label}' )${0}
+snippet app.eventChannelTrigger
+	app.eventChannel.trigger('${1:modul}:${2:label}', ${3:{ key:'value' }} );${0}
+snippet app.routerNavigate
+	app.router.navigate('${1:bob5}/${2:path}/'+self.model.get('eid'), {trigger: ${3:true}});${0}
+snippet app.routerNavigateWithParameter
+	app.router.navigate('${1:bob5}/${2:path}/'+${3:self.model.get('eid')}, {trigger: ${4:true}});${0}
 snippet $ready
 	$(document).ready(function(){${0}});
 snippet :{
