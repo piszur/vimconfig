@@ -17,13 +17,13 @@ snippet app.errorHandler
 snippet app.showAlert.errorHandler
 	app.showAlert.errorHandler( ${1:r.result} );${0}
 snippet app.showAlert.success
-	app.showAlert.success( ${1:message} );${0}
+	app.showAlert.success( $.i18n('${1:imessage}') );${0}
 snippet app.showAlert.info
-	app.showAlert.info( ${1:message} );${0}
+	app.showAlert.info( $.i18n('${1:imessage}') );${0}
 snippet app.showAlert.warning
-	app.showAlert.warning( ${1:message} );${0}
+	app.showAlert.warning( $.i18n('${1:imessage}') );${0}
 snippet app.showAlert.danger
-	app.showAlert.danger( ${1:message} );${0}
+	app.showAlert.danger( $.i18n('${1:imessage}') );${0}
 snippet app.eventChannelOn
 	app.eventChannel.on('${1:modul}:${2:label}', function(${3:p}){${0}} );
 snippet app.eventChannelReply
