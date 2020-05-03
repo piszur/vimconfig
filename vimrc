@@ -90,10 +90,23 @@ set lazyredraw                                   "don't redraw while executing m
 let mapleader = ","                              "define a mapping which uses the special string '<Leader>' can be used
 let g:mapleader = ","                            "define a mapping which uses the special string '<Leader>' can be used
 
-if has('mouse')
-  set ttyfast
-  set ttymouse=xterm2
-  set mouse=a                                    "enable the use of the mouse
+setglobal printoptions=paper:letter
+
+" if has('mouse')
+"   set ttyfast
+"   set ttymouse=xterm2
+"   set mouse=a                                    "enable the use of the mouse
+" endif
+setglobal mousemodel=popup
+if $TERM =~# '^screen'
+  if exists('+ttymouse') && &ttymouse ==# ''
+    setglobal ttymouse=xterm
+  endif
+endif
+if !has('gui_running') && empty($DISPLAY) || !has('gui')
+  setglobal mouse=
+else
+  setglobal mouse=nvi
 endif
 
 set fillchars=vert:\ ,stl:\ ,stlnc:\             "no fill character the statuslines and vertical separators
