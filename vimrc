@@ -97,6 +97,8 @@ setglobal printoptions=paper:letter
 "   set ttymouse=xterm2
 "   set mouse=a                                    "enable the use of the mouse
 " endif
+
+" mouse handling
 setglobal mousemodel=popup
 if $TERM =~# '^screen'
   if exists('+ttymouse') && &ttymouse ==# ''
