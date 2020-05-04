@@ -1,9 +1,9 @@
-vimconfig
-=========
-
-piszur's vim config
-
-git clone https://github.com/piszur/vimconfig.git ~/.vim/
-cd ~/.vim/
-git pull --recurse-submodules
-
+## piszur's vim config
+* Clone
+    * git clone https://github.com/piszur/vimconfig.git ~/.vim/
+    * cd ~/.vim/
+    * git submodule init
+    * git submodule update
+    * sudo apt-get install exuberant-ctags
+* Refresh
+    * git pull --recurse-submodules
