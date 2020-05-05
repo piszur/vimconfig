@@ -426,7 +426,7 @@ endfunction
 
 "specifies the key sequence that toggles the 'paste' option
 set pastetoggle=<F4>                             "only in insert mode
-nnoremap <F4> :set invpaste paste?<CR>
+nnoremap <F4> :set invpaste paste? <bar> set number! <bar> set relativenumber!<CR>
 
 "yank text from cursor to end of line
 nnoremap Y y$
