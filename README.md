@@ -5,5 +5,8 @@
     * git submodule init
     * git submodule update
     * sudo apt-get install exuberant-ctags
-* Refresh
+* Refresh submodules
     * git pull --recurse-submodules
+* Add submodule
+    * git clone <github-web-url> bundle/<dir>
+    * git submodule add <github-web-url> bundle/<dir>
