@@ -14,7 +14,7 @@ execute pathogen#infect()
 
 set history=1000                                 "the command-lines that you enter are remembered in a history table
 set undolevels=1000                              "maximum number of changes that can be undone
-set undodir=~/temp/vimundofiles                  "directory names for undo files
+set undodir=~/.vim/undodir                       "directory names for undo files
 set undofile                                     "automatically saves undo history to an undo file when writing a buffer to a file
 
 filetype on                                      "enable file type detection
@@ -153,7 +153,7 @@ set wildignore+=*.orig                           "Merge resolution files
 
 "effect in the GUI version of Vim
 set guioptions=aegirLt                           "autoselect,tab page,grey menu,vim icon,right scrollbar,optional left scrollbar,tearoff
-"set guioptions=aegirLtmT                           "autoselect,tab page,grey menu,vim icon,right scrollbar,optional left scrollbar,tearoff,menu,toolbar
+"set guioptions=aegirLtmT                        "autoselect,tab page,grey menu,vim icon,right scrollbar,optional left scrollbar,tearoff,menu,toolbar
 
 "add menu and toolbar in the GUI version of Vim
 nnoremap <F11> :set guioptions+=mT
