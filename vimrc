@@ -32,6 +32,7 @@ autocmd FileType html,markdown,mustache,handlebars setlocal omnifunc=htmlcomplet
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd FileType perl set complete-=i
 inoremap <C-Tab> <C-x><C-o>
 
 
