@@ -78,8 +78,9 @@ set showmode                                     "show current mode down the bot
 "show relative line numbers (except insert mode, when show absolute line numbers):
 set numberwidth=4                                "minimal number of columns to use for the line number
 set relativenumber                               "show relative line numbers (set default)
-autocmd InsertEnter,FocusLost,WinLeave * silent! :set number
+set number
 autocmd InsertLeave,BufNewFile,BufRead,VimEnter,WinEnter * silent! :set relativenumber
+autocmd InsertEnter,FocusLost,WinLeave * silent! :set number
 
 set splitright                                   "splitting a window will put the new window right of the current one
 " set splitbelow                                   "splitting a window will put the new window below the current one
@@ -426,7 +427,7 @@ endfunction
 
 "specifies the key sequence that toggles the 'paste' option
 set pastetoggle=<F4>                             "only in insert mode
-nnoremap <F4> :set invpaste paste? <bar> set number! <bar> set relativenumber!<CR>
+nnoremap <F4> :set invpaste paste? <bar> set relativenumber! <bar> set number!<CR>
 
 "yank text from cursor to end of line
 nnoremap Y y$
