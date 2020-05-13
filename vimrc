@@ -847,7 +847,7 @@ nnoremap <silent> <Leader>fh :FufHelpWithCursorWord<CR>
 " let g:fuf_keyOpenTabpage = ?
 
 "bundle/vim-fugitive                             "the best Git wrapper of all time
-" set diffopt+=vertical                            "Gdiff split window vertical
+" set diffopt+=vertical                          "Gdiff split window vertical
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
 "bundle/bufexplorer                              "you can quickly and easily switch between buffers
@@ -857,10 +857,9 @@ let g:bufExplorerSplitHorzSize=20                "new split window is n rows hig
 nnoremap <silent> <Tab>00 :BufExplorerHorizontalSplit<CR>
 
 "bundle/nerdtree                                 "a tree explorer plugin for navigating the filesystem
-nmap <Leader><Return> :NERDTreeToggle<CR>
-" nmap <Leader><Leader><Return> :execute (exists("b:NERDTree") ?  'NERDTreeToggle' : 'NERDTree '.expand("%:h").'/')<CR>
-nmap <Leader><Leader><Return> :execute (exists("b:NERDTree") ? 'NERDTreeToggle' : 'NERDTreeFind')<CR>
-let NERDTreeIgnore=['\.sw.\?$', '\~$']
+let NERDTreeIgnore=['\.sw.\?$', '\~$']           "files not displayed
+nmap <Leader><Return> :execute (exists("b:NERDTree") ? 'NERDTreeToggle' : 'NERDTreeFind')<CR>
+nmap <Leader><Leader><Return> :NERDTreeToggle<CR>
 
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
