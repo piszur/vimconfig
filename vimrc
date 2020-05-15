@@ -948,6 +948,10 @@ let g:gundo_width = 40                           "set the horizontal width of th
 let g:gundo_preview_height = 20                  "set the vertical height of the Gundo preview
 let g:gundo_close_on_revert = 1                  "automatically close the Gundo windows when reverting
 let g:gundo_playback_delay = 100                 "delay in milliseconds between each change when running 'play to' mode
+if has('python3')
+    let g:gundo_prefer_python3 = 1          " anything else breaks on Ubuntu 16.04+
+endif
+
 
 "plugin/showmarks.vim                            "visually shows the location of marks
 let g:showmarks_textlower="\t>"                  "defines how the mark is to be displayed
