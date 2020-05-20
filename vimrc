@@ -858,9 +858,9 @@ nnoremap <silent> <Tab>00 :BufExplorerHorizontalSplit<CR>
 
 "bundle/nerdtree                                 "a tree explorer plugin for navigating the filesystem
 let NERDTreeIgnore=['\.sw.\?$', '\~$']           "files not displayed
-nmap <Leader><Return> :execute (exists("b:NERDTree") ? 'NERDTreeToggle' : "NERDTreeFind")<CR>
-nmap <Leader><Leader><Return> :execute (split(expand("%:p"),"/")[4] == "src") ? "NERDTreeFind"." /".join(split(expand('%:p'),"/")[0:5],"/")."/" : "NERDTreeToggle"<CR>
-nmap <Leader><Leader><Leader><Return> :NERDTreeToggle<CR>
+nmap <Leader><Return> :execute (exists("b:NERDTree") ? "NERDTreeToggle" : "NERDTreeFind")<CR>
+nmap <Leader><Leader><Return> :execute ((split(expand("%:p"),"/")[1] == "fejleszto" && split(expand("%:p"),"/")[4] == "src") ? "NERDTreeFind"." /".join(split(expand('%:p'),"/")[0:5],"/")."/" : "NERDTree")<CR>
+nmap <Leader><Leader><Leader><Return> :NERDTree<CR>
 
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
