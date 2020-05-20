@@ -986,6 +986,11 @@ autocmd BufNewFile,BufRead __MRU_Files__ nnoremap <buffer> <Esc>D h
 "plugin/html_autoclosetag.vim                  "automatically closes XML/HTML tags once you finish typing them
 autocmd FileType xhtml,xml source ~/.vim/plugin/html_autoclosetag.vim
 
+"bundle/vim-dirdiff
+let g:DirDiffForceLang = "C"
+let g:DirDiffTextFiles = " A(z) "
+let g:DirDiffTextAnd = " és a(z) "
+let g:DirDiffTextDiffer = " fájlok különböznek"
 "}}}
 "{{{ Javascript
 autocmd FileType javascript setlocal iskeyword-=.
