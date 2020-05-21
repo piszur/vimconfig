@@ -992,6 +992,12 @@ let g:DirDiffForceLang = "C"
 let g:DirDiffTextFiles = " A(z) "
 let g:DirDiffTextAnd = " és a(z) "
 let g:DirDiffTextDiffer = " fájlok különböznek"
+
+"bundle/taboo.vim
+let g:taboo_tab_format=" %N%m %f "
+let g:taboo_renamed_tab_format=" %N%m [%l] "
+
+
 "}}}
 "{{{ Javascript
 autocmd FileType javascript setlocal iskeyword-=.
