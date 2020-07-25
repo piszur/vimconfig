@@ -187,3 +187,6 @@
 [submodule "bundle/taboo.vim"]
 	path = bundle/taboo.vim
 	url = https://github.com/gcmt/taboo.vim.git
+[submodule "bundle/vim-flog"]
+	path = bundle/vim-flog
+	url = https://github.com/rbong/vim-flog.git
