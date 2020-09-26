@@ -42,6 +42,7 @@ autocmd BufNewFile,BufRead *.scss setfiletype sass
 autocmd BufNewFile,BufRead *.sql setfiletype pgsql
 " autocmd BufNewFile,BufRead *.sql setfiletype sqlanywhere
 autocmd BufRead,BufNewFile jquery.*.js set filetype=javascript syntax=jquery
+" autocmd BufRead,BufNewFile *.cpp set filetype=cpp syntax=cpp11
 autocmd BufNewFile,BufRead *.json set filetype=json
 autocmd BufNewFile,BufRead **/Template/*.html set filetype=html.mustache
 "}}}
@@ -911,7 +912,11 @@ nnoremap <silent> d<Space> :StripWhitespace<CR>
 "bundle/vim-commentary                           "comment stuff out (gc,gcc,etc.)
 autocmd FileType sql set commentstring=--\ %s
 
-"bundle/syntastic                                "syntax checking hacks for vim
+"bundle/vim-cpp-enhanced-highlight
+let g:cpp_class_scope_highlight = 1              " Highlighting of class scope
+let g:cpp_class_decl_highlight = 1               " Highlighting of class names in declarations
+
+"bundle/syntastic"                                "syntax checking hacks for vim
 let g:syntastic_enable_signs = 1                 "mark lines with errors and warnings in the sign column
 let g:syntastic_auto_jump = 0                    "jumping to the first error reported by a check
 
@@ -924,6 +929,8 @@ let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_javascript_eslint_exe = 'eslint'
 let g:syntastic_sass_checkers=['sass']
 let g:syntastic_scss_checkers=['scss']
+let g:syntastic_c_remove_include_errors = 1
+let &path.="~/munka/nisweb/server/pr/include"
 " let g:syntastic_sass_sass_exe = 'sass-lint -v -q'
 " let g:syntastic_scss_scss_exe = 'sass-lint -v -q'
 
@@ -997,6 +1004,9 @@ let g:DirDiffTextDiffer = " fájlok különböznek"
 let g:taboo_tab_format=" %N%m %f "
 let g:taboo_renamed_tab_format=" %N%m [%l] "
 
+
+"}}}
+"{{{ C/C++
 
 "}}}
 "{{{ Javascript
@@ -1199,6 +1209,8 @@ inoremap <expr> <C-b>S (split(expand("%:p"),"/")[1] == 'fejleszto') ? "/home/fej
 
 autocmd BufRead,BufNewFile **/src/server/*.conf set filetype=perl
 autocmd BufRead,BufNewFile **/src/server/*.conf setfiletype perl
+
+command! MakeNisweb !cd ~/munka/nisweb/;make install;cd -
 "}}}
 "{{{ private settings
 
