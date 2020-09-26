@@ -199,10 +199,10 @@ vnoremap <Down> gj
 " cnoremap <C-S-Right> <Esc>gt:<C-R>:
 
 "navigating to different window (in normal mode)
-nnoremap <Tab><Up> <C-w>k
-nnoremap <Tab><Down> <C-w>j
-nnoremap <Tab><Left> <C-w>h
-nnoremap <Tab><Right> <C-w>l
+" nnoremap <Tab><Up> <C-w>k
+" nnoremap <Tab><Down> <C-w>j
+" nnoremap <Tab><Left> <C-w>h
+" nnoremap <Tab><Right> <C-w>l
 
 "moving cursor to next TODO
 nnoremap <Tab><Space> :.,/todo\\|fixme/
