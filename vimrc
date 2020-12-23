@@ -390,6 +390,10 @@ onoremap <silent> am :<c-u>normal! f}lvF{hF{h<cr>
 "}}}
 "{{{ search and replace
 
+"grep current word
+map <leader>* :grep -R <cword> * --exclude-dir={.git,tmp,log}<CR><CR>
+map <leader>g* :Ggrep --untracked <cword><CR><CR>
+
 "hide search highlighting
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>:call clearmatches()<CR>
 
