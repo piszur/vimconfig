@@ -177,6 +177,19 @@ nnoremap <C-W>u :ZoomToggle<CR>
 
 command! -nargs=* Make make <args> | cwindow 8
 nnoremap <silent> <F7> :make<CR>
+
+
+if has("gui_running")
+  if has("gui_gtk")
+    set guifont=Hack\ 12
+  elseif has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+  elseif has("gui_win32")
+    set guifont=Consolas:h11:cANSI
+  endif
+endif
 "}}}
 "{{{ navigation
 
@@ -880,6 +893,17 @@ let g:NERDTreeIndicatorMapCustom = {
     \ }
 let g:NERDTreeShowIgnoredStatus = 1
 
+"bundle/vim-devicons
+let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {} " needed
+" let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['.*jquery.*\.js$'] = ''
+
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
+" let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['png'] = ''
+
+let g:WebDevIconsNerdTreeAfterGlyphPadding = '  '
+
+" let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sh'] = '亮'
+
 "bundle/vim-speeddating                          "use CTRL-A/CTRL-X to increment dates, times, and more
 autocmd BufEnter * :SpeedDatingFormat %y.%m.%d
 autocmd BufEnter * :SpeedDatingFormat %Y.%m.%d
@@ -1003,6 +1027,13 @@ let g:DirDiffTextDiffer = " fájlok különböznek"
 "bundle/taboo.vim
 let g:taboo_tab_format=" %N%m %f "
 let g:taboo_renamed_tab_format=" %N%m [%l] "
+
+"bundle/QFEnter
+let g:qfenter_keymap = {}
+let g:qfenter_keymap.open = ['<CR>', '<2-LeftMouse>']
+let g:qfenter_keymap.vopen = ['v<CR>']
+" let g:qfenter_keymap.hopen = ['<Leader><Space>']
+let g:qfenter_keymap.topen = ['t<CR>']
 
 
 "}}}
