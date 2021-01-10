@@ -181,13 +181,13 @@ nnoremap <silent> <F7> :make<CR>
 
 if has("gui_running")
   if has("gui_gtk")
-    set guifont=Hack\ 12
+    set guifont=Hack\ 15
   elseif has("gui_gtk2")
-    set guifont=Inconsolata\ 12
+    set guifont=Inconsolata\ 15
   elseif has("gui_macvim")
-    set guifont=Menlo\ Regular:h14
+    set guifont=Menlo\ Regular:h15
   elseif has("gui_win32")
-    set guifont=Consolas:h11:cANSI
+    set guifont=Consolas:h15:cANSI
   endif
 endif
 "}}}
@@ -339,6 +339,19 @@ set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:⋅
 vnoremap < <gv
 vnoremap > >gv
 
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+function! s:align()
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
+
 "}}}
 "{{{ visual mode related
 
@@ -368,7 +381,7 @@ nnoremap Vaa ggVG
 
 "minden másolása rendszervágólapra 'a-tól 'z-ig
 nnoremap yz mtg'a"+yg'zg`t
-nnoremap <C-y>z mtg'a"+yg'zg`t
+nnoremap <leader>yz mtg'a"+yg'zg`t
 
 "}}}
 "{{{ text objects
@@ -451,9 +464,9 @@ nnoremap <F4> :set invpaste paste? <bar> set relativenumber! <bar> set number!<C
 nnoremap Y y$
 
 "yank using the system clipboard
-vnoremap <C-y> "+y
-nnoremap <C-y> "+y
-nnoremap <C-y><C-y> "+yy
+vnoremap <leader>y "+y
+nnoremap <leader>y "+y
+nnoremap <leader>y<leader>y "+yy
 
 "paste using the system clipboard
 vnoremap <C-p> d"+P`[v`]
@@ -1111,6 +1124,52 @@ func! s:AdjustTT2Type()
         setfiletype tt2
     endif
 endfunc
+
+"}}}
+"{{{ improved hex editing
+
+" ex command for toggling hex mode - define mapping if desired
+command -bar Hexmode call ToggleHex()
+
+" helper function to toggle hex mode
+function ToggleHex()
+  " hex mode should be considered a read-only operation
+  " save values for modified and read-only for restoration later,
+  " and clear the read-only flag for now
+  let l:modified=&mod
+  let l:oldreadonly=&readonly
+  let &readonly=0
+  let l:oldmodifiable=&modifiable
+  let &modifiable=1
+  if !exists("b:editHex") || !b:editHex
+    " save old options
+    let b:oldft=&ft
+    let b:oldbin=&bin
+    " set new options
+    setlocal binary " make sure it overrides any textwidth, etc.
+    silent :e " this will reload the file without trickeries 
+              "(DOS line endings will be shown entirely )
+    let &ft="xxd"
+    " set status
+    let b:editHex=1
+    " switch to hex editor
+    %!xxd
+  else
+    " restore old options
+    let &ft=b:oldft
+    if !b:oldbin
+      setlocal nobinary
+    endif
+    " set status
+    let b:editHex=0
+    " return to normal editing
+    %!xxd -r
+  endif
+  " restore values for modified and read only state
+  let &mod=l:modified
+  let &readonly=l:oldreadonly
+  let &modifiable=l:oldmodifiable
+endfunction
 
 "}}}
 "{{{ BOB specific settings
