@@ -314,6 +314,7 @@ command! SQLUppercase s/\<\w\+\>/\=synIDattr(synID(line('.'),col('.'),1), 'name'
 "{{{ tab and indent related
 
 set shiftwidth=2                                 "number of spaces to use for each step of (auto)indent
+set shiftround                                   "rounds the indent spacing to the next multiple of shiftwidth
 set tabstop=2                                    "Number of spaces that a <Tab> in the file counts for
 set softtabstop=2                                "number of spaces that a <Tab> counts
 set expandtab                                    "in insert mode: use spaces to insert a <Tab>

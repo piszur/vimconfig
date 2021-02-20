@@ -1,4 +1,10 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =2
+let g:netrw_dirhistcnt =8
+let g:netrw_dirhist_8='/home/piszur/.vim'
+let g:netrw_dirhist_7='/home/piszur'
+let g:netrw_dirhist_6='/home/piszur/.npm/_logs'
+let g:netrw_dirhist_5='/home/piszur/.npm'
+let g:netrw_dirhist_4='/home/piszur/.npm/_npx'
+let g:netrw_dirhist_3='/home/piszur/.npm'
 let g:netrw_dirhist_2='/home/piszur'
 let g:netrw_dirhist_1='/home/piszur/.vim'
