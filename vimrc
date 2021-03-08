@@ -806,6 +806,11 @@ endfunction
 "bundle/vim-obsession                            "continuously updated session files
 "bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
 
+"bundle/translate.vim
+let g:translate_target = 'hu'
+nmap gr <Plug>(Translate)
+vmap t <Plug>(VTranslate)
+
 "plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
 autocmd BufRead,BufNewFile *.json setfiletype json
 
