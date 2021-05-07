@@ -865,14 +865,14 @@ map <expr> n g:incsearchOn==1 ? '<Plug>(incsearch-nohl-n)' : 'n'
 map <expr> N g:incsearchOn==1 ? '<Plug>(incsearch-nohl-N)' : 'N'
 
 "bundle/vim-asterisk                             "provides improved * motions
-map *   <Plug>(asterisk-*)
-map #   <Plug>(asterisk-#)
-map g*  <Plug>(asterisk-g*)
-map g#  <Plug>(asterisk-g#)
-map z*  <Plug>(asterisk-z*)
-map gz* <Plug>(asterisk-gz*)
-map z#  <Plug>(asterisk-z#)
-map gz# <Plug>(asterisk-gz#)
+map *   <Plug>(asterisk-g*)
+map #   <Plug>(asterisk-g#)
+map g*  <Plug>(asterisk-*)
+map g#  <Plug>(asterisk-#)
+map z*  <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-gz#)
+map gz* <Plug>(asterisk-z*)
+map gz# <Plug>(asterisk-z#)
 let g:asterisk#keeppos = 1
 
 "bundle/vim-over
