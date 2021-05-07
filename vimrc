@@ -453,6 +453,11 @@ function! LocationFilenames()
   return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
 endfunction
 
+" jump next/prev item in quickfix list
+map <leader>* :grep -R <cword> * --exclude-dir={.git,tmp,log}<CR><CR>
+nnoremap <silent> <leader>n :cnext <CR>
+nnoremap <silent> <leader>N :cprevious <CR>
+
 "show CSS color code in browser
 "}}}
 "{{{ manage clipboard
@@ -570,6 +575,9 @@ autocmd BufEnter *.pm :setlocal foldmethod=expr
 "close fold in read vimrc
 autocmd BufRead ~/.vim/vimrc normal zm
 autocmd BufRead ~/.nvim/vimrc normal zm
+
+"close fold in read vimrc
+autocmd BufRead *.md normal zR
 
 "}}}
 "{{{ color schema and custom colors
@@ -813,6 +821,9 @@ nmap <leader>t <Plug>(Translate)
 vmap t <Plug>(VTranslate)
 nnoremap <leader>T viW:TranslateR<CR>
 vnoremap T :TranslateR<CR>
+
+"bundle/vim-yaml.vim
+let g:yaml_limit_spell=1
 
 "plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
 autocmd BufRead,BufNewFile *.json setfiletype json
@@ -1113,7 +1124,7 @@ autocmd BufNewFile,BufRead *.tt call s:AdjustTT2Type()
 let b:tt2_syn_tags = '\[% %] <!-- -->'
 
 "use <leader><Ins> to insert template markers
-autocmd FileType html,tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
+autocmd FileType tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
 autocmd FileType tt2,tt2html inoremap <Leader><Ins><Ins> [% lang. %]<left><left><left>
 
 autocmd FileType html.ep inoremap <Leader><Ins> <%=  %><left><left><left>
