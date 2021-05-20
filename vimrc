@@ -787,7 +787,6 @@ endfunction
 "bundle/vim-snipmate                             "using TextMate-style snippets in Vim (in vim-snippets and bob_snippets)
 "bundle/vim-addon-mw-utils                       "interpret a file by function and cache file automatically (snipmate dependency)
 "bundle/tlib_vim                                 "this library provides some utility functions (snipmate dependency)
-"bundle/vim-snippets                             "general snippet collection
 "bundle/bob_snippets                             "BOB specific snippets
 "bundle/vim-abolish                              "easily search for, substitute, and abbreviate multiple variants of a word
 "bundle/vim-surround                             "delete/change/add parentheses/quotes/XML-tags/much more with ease
@@ -813,6 +812,9 @@ endfunction
 "bundle/vim-gitgutter                            "shows a git diff in the gutter (sign column) and stages/undoes hunks
 "bundle/vim-obsession                            "continuously updated session files
 "bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
+
+"bundle/vim-snippets                             "general snippet collection
+let g:snipMate = { 'snippet_version' : 1 }
 
 "bundle/translate.vim
 " let g:translate_target = 'hu'
@@ -916,7 +918,8 @@ nmap <Leader><Leader><Leader><Return> :NERDTree<CR>
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
 "bundle/nerdtree-git-plugin                      "NERDTree showing git status
-let g:NERDTreeIndicatorMapCustom = {
+" let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -928,7 +931,8 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Ignored'   : '☒',
     \ "Unknown"   : "?"
     \ }
-let g:NERDTreeShowIgnoredStatus = 1
+" let g:NERDTreeShowIgnoredStatus = 1
+let g:NERDTreeGitStatusShowIgnored = 1
 
 "bundle/vim-devicons
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {} " needed
