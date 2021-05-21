@@ -190,3 +190,9 @@
 [submodule "bundle/vim-flog"]
 	path = bundle/vim-flog
 	url = https://github.com/rbong/vim-flog.git
+[submodule "bundle/vim-markdown"]
+	path = bundle/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown.git
+[submodule "bundle/vim-translator"]
+	path = bundle/vim-translator
+	url = https://github.com/voldikss/vim-translator.git

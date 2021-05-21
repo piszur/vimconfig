@@ -177,6 +177,19 @@ nnoremap <C-W>u :ZoomToggle<CR>
 
 command! -nargs=* Make make <args> | cwindow 8
 nnoremap <silent> <F7> :make<CR>
+
+
+if has("gui_running")
+  if has("gui_gtk")
+    set guifont=Hack\ 15
+  elseif has("gui_gtk2")
+    set guifont=Inconsolata\ 15
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h15
+  elseif has("gui_win32")
+    set guifont=Consolas:h15:cANSI
+  endif
+endif
 "}}}
 "{{{ navigation
 
@@ -307,6 +320,7 @@ command! SQLUppercase s/\<\w\+\>/\=synIDattr(synID(line('.'),col('.'),1), 'name'
 "{{{ tab and indent related
 
 set shiftwidth=2                                 "number of spaces to use for each step of (auto)indent
+set shiftround                                   "rounds the indent spacing to the next multiple of shiftwidth
 set tabstop=2                                    "Number of spaces that a <Tab> in the file counts for
 set softtabstop=2                                "number of spaces that a <Tab> counts
 set expandtab                                    "in insert mode: use spaces to insert a <Tab>
@@ -331,6 +345,19 @@ set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:⋅
 "shift line(s) in visual mode
 vnoremap < <gv
 vnoremap > >gv
+
+inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+function! s:align()
+  let p = '^\s*|\s.*\s|\s*$'
+  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+    Tabularize/|/l1
+    normal! 0
+    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+  endif
+endfunction
 
 "}}}
 "{{{ visual mode related
@@ -361,7 +388,7 @@ nnoremap Vaa ggVG
 
 "minden másolása rendszervágólapra 'a-tól 'z-ig
 nnoremap yz mtg'a"+yg'zg`t
-nnoremap <C-y>z mtg'a"+yg'zg`t
+nnoremap <leader>yz mtg'a"+yg'zg`t
 
 "}}}
 "{{{ text objects
@@ -382,6 +409,10 @@ onoremap <silent> am :<c-u>normal! f}lvF{hF{h<cr>
 
 "}}}
 "{{{ search and replace
+
+"grep current word
+map <leader>* :grep -R <cword> * --exclude-dir={.git,tmp,log}<CR><CR>
+map <leader>g* :Ggrep --untracked <cword><CR><CR>
 
 "hide search highlighting
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>:call clearmatches()<CR>
@@ -428,6 +459,11 @@ function! LocationFilenames()
   return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
 endfunction
 
+" jump next/prev item in quickfix list
+map <leader>* :grep -R <cword> * --exclude-dir={.git,tmp,log}<CR><CR>
+nnoremap <silent> <leader>n :cnext <CR>
+nnoremap <silent> <leader>N :cprevious <CR>
+
 "show CSS color code in browser
 "}}}
 "{{{ manage clipboard
@@ -440,9 +476,9 @@ nnoremap <F4> :set invpaste paste? <bar> set relativenumber! <bar> set number!<C
 nnoremap Y y$
 
 "yank using the system clipboard
-vnoremap <C-y> "+y
-nnoremap <C-y> "+y
-nnoremap <C-y><C-y> "+yy
+vnoremap <leader>y "+y
+nnoremap <leader>y "+y
+nnoremap <leader>y<leader>y "+yy
 
 "paste using the system clipboard
 vnoremap <C-p> d"+P`[v`]
@@ -545,6 +581,9 @@ autocmd BufEnter *.pm :setlocal foldmethod=expr
 "close fold in read vimrc
 autocmd BufRead ~/.vim/vimrc normal zm
 autocmd BufRead ~/.nvim/vimrc normal zm
+
+"close fold in read vimrc
+autocmd BufRead *.md normal zR
 
 "}}}
 "{{{ color schema and custom colors
@@ -754,7 +793,6 @@ endfunction
 "bundle/vim-snipmate                             "using TextMate-style snippets in Vim (in vim-snippets and bob_snippets)
 "bundle/vim-addon-mw-utils                       "interpret a file by function and cache file automatically (snipmate dependency)
 "bundle/tlib_vim                                 "this library provides some utility functions (snipmate dependency)
-"bundle/vim-snippets                             "general snippet collection
 "bundle/bob_snippets                             "BOB specific snippets
 "bundle/vim-abolish                              "easily search for, substitute, and abbreviate multiple variants of a word
 "bundle/vim-surround                             "delete/change/add parentheses/quotes/XML-tags/much more with ease
@@ -780,6 +818,24 @@ endfunction
 "bundle/vim-gitgutter                            "shows a git diff in the gutter (sign column) and stages/undoes hunks
 "bundle/vim-obsession                            "continuously updated session files
 "bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
+
+"bundle/coc.nvim                                 "True snippet and additional text editing support
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gr <Plug>(coc-references)
+
+"bundle/vim-snippets                             "general snippet collection
+let g:snipMate = { 'snippet_version' : 1 }
+
+"bundle/translate.vim
+" let g:translate_target = 'hu'
+let g:translator_target_lang = 'hu'
+nmap <leader>t <Plug>(Translate)
+vmap t <Plug>(VTranslate)
+nnoremap <leader>T viW:TranslateR<CR>
+vnoremap T :TranslateR<CR>
+
+"bundle/vim-yaml.vim
+let g:yaml_limit_spell=1
 
 "plugin/sourcebeautify/sourcebeautify.vim        "beautify your javascript,html,css source code inside Vim
 autocmd BufRead,BufNewFile *.json setfiletype json
@@ -821,14 +877,14 @@ map <expr> n g:incsearchOn==1 ? '<Plug>(incsearch-nohl-n)' : 'n'
 map <expr> N g:incsearchOn==1 ? '<Plug>(incsearch-nohl-N)' : 'N'
 
 "bundle/vim-asterisk                             "provides improved * motions
-map *   <Plug>(asterisk-*)
-map #   <Plug>(asterisk-#)
-map g*  <Plug>(asterisk-g*)
-map g#  <Plug>(asterisk-g#)
-map z*  <Plug>(asterisk-z*)
-map gz* <Plug>(asterisk-gz*)
-map z#  <Plug>(asterisk-z#)
-map gz# <Plug>(asterisk-gz#)
+map *   <Plug>(asterisk-g*)
+map #   <Plug>(asterisk-g#)
+map g*  <Plug>(asterisk-*)
+map g#  <Plug>(asterisk-#)
+map z*  <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-gz#)
+map gz* <Plug>(asterisk-z*)
+map gz# <Plug>(asterisk-z#)
 let g:asterisk#keeppos = 1
 
 "bundle/vim-over
@@ -872,7 +928,8 @@ nmap <Leader><Leader><Leader><Return> :NERDTree<CR>
 "bundle/nerdtree-execute                         "plugin for NERD Tree that provides an execute menu item,
                                                  "that executes system default application for file or directory
 "bundle/nerdtree-git-plugin                      "NERDTree showing git status
-let g:NERDTreeIndicatorMapCustom = {
+" let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -884,7 +941,19 @@ let g:NERDTreeIndicatorMapCustom = {
     \ 'Ignored'   : '☒',
     \ "Unknown"   : "?"
     \ }
-let g:NERDTreeShowIgnoredStatus = 1
+" let g:NERDTreeShowIgnoredStatus = 1
+let g:NERDTreeGitStatusShowIgnored = 1
+
+"bundle/vim-devicons
+let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {} " needed
+" let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['.*jquery.*\.js$'] = ''
+
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
+" let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['png'] = ''
+
+let g:WebDevIconsNerdTreeAfterGlyphPadding = '  '
+
+" let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sh'] = '亮'
 
 "bundle/vim-speeddating                          "use CTRL-A/CTRL-X to increment dates, times, and more
 autocmd BufEnter * :SpeedDatingFormat %y.%m.%d
@@ -1010,6 +1079,13 @@ let g:DirDiffTextDiffer = " fájlok különböznek"
 let g:taboo_tab_format=" %N%m %f "
 let g:taboo_renamed_tab_format=" %N%m [%l] "
 
+"bundle/QFEnter
+let g:qfenter_keymap = {}
+let g:qfenter_keymap.open = ['<CR>', '<2-LeftMouse>']
+let g:qfenter_keymap.vopen = ['v<CR>']
+" let g:qfenter_keymap.hopen = ['<Leader><Space>']
+let g:qfenter_keymap.topen = ['t<CR>']
+
 
 "}}}
 "{{{ C/C++
@@ -1062,7 +1138,7 @@ autocmd BufNewFile,BufRead *.tt call s:AdjustTT2Type()
 let b:tt2_syn_tags = '\[% %] <!-- -->'
 
 "use <leader><Ins> to insert template markers
-autocmd FileType html,tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
+autocmd FileType tt2,tt2html inoremap <Leader><Ins> [%  %]<left><left><left>
 autocmd FileType tt2,tt2html inoremap <Leader><Ins><Ins> [% lang. %]<left><left><left>
 
 autocmd FileType html.ep inoremap <Leader><Ins> <%=  %><left><left><left>
@@ -1082,6 +1158,52 @@ func! s:AdjustTT2Type()
         setfiletype tt2
     endif
 endfunc
+
+"}}}
+"{{{ improved hex editing
+
+" ex command for toggling hex mode - define mapping if desired
+command -bar Hexmode call ToggleHex()
+
+" helper function to toggle hex mode
+function ToggleHex()
+  " hex mode should be considered a read-only operation
+  " save values for modified and read-only for restoration later,
+  " and clear the read-only flag for now
+  let l:modified=&mod
+  let l:oldreadonly=&readonly
+  let &readonly=0
+  let l:oldmodifiable=&modifiable
+  let &modifiable=1
+  if !exists("b:editHex") || !b:editHex
+    " save old options
+    let b:oldft=&ft
+    let b:oldbin=&bin
+    " set new options
+    setlocal binary " make sure it overrides any textwidth, etc.
+    silent :e " this will reload the file without trickeries 
+              "(DOS line endings will be shown entirely )
+    let &ft="xxd"
+    " set status
+    let b:editHex=1
+    " switch to hex editor
+    %!xxd
+  else
+    " restore old options
+    let &ft=b:oldft
+    if !b:oldbin
+      setlocal nobinary
+    endif
+    " set status
+    let b:editHex=0
+    " return to normal editing
+    %!xxd -r
+  endif
+  " restore values for modified and read only state
+  let &mod=l:modified
+  let &readonly=l:oldreadonly
+  let &modifiable=l:oldmodifiable
+endfunction
 
 "}}}
 "{{{ BOB specific settings

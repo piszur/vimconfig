@@ -2,6 +2,10 @@ snippet log
 	console.log( '${1:todo}', ${0:$1} );
 snippet clog
 	console.log( '%c ${1:todo}','color:${2:red};font-weight:${3:normal}', ${0:$1} );
+snippet tlog
+	console.log( _c.${1:Debug}, '${2:todo}:', ${0:$2} );
+snippet ti18n
+	{{#i18n}}${0}{{/i18n}}
 snippet i18n
 	$.i18n( ${0} )
 snippet eventBreaking
