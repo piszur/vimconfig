@@ -813,6 +813,10 @@ endfunction
 "bundle/vim-obsession                            "continuously updated session files
 "bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
 
+"bundle/coc.nvim                                 "True snippet and additional text editing support
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gr <Plug>(coc-references)
+
 "bundle/vim-snippets                             "general snippet collection
 let g:snipMate = { 'snippet_version' : 1 }
 
