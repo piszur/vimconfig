@@ -818,6 +818,7 @@ endfunction
 "bundle/vim-gitgutter                            "shows a git diff in the gutter (sign column) and stages/undoes hunks
 "bundle/vim-obsession                            "continuously updated session files
 "bundle/vim-stamp                                "replaces the currently selected text with the text in the delete register
+"bundle/vim-gutentags/                           +takes care of the much needed management of tags files in Vim
 
 "bundle/coc.nvim                                 "True snippet and additional text editing support
 nmap <leader>gd <Plug>(coc-definition)
