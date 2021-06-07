@@ -82,7 +82,7 @@ KEY MAPPINGS 					*asterisk-key-mappings*
 <Plug>(asterisk-gz#)   					*<Plug>(asterisk-gz#)*
 
 	Basic behavior is almost same with default one.
-	See: |star|, |#|, |gstar|, |g#|
+	See: |star|, |#|, |gsatr|, |g#|
 
 	Improvement:
 	    - It uses not only 'ignorecase' but also 'smartcase' unlike
@@ -114,18 +114,16 @@ VARIABLES 					*asterisk-variables*
 
 g:asterisk#keeppos					*g:asterisk#keeppos*
 	You can keep cursor position while moving across matches.
-	By default this feature is disabled but you can activate
+	By default this feature is disabeled but you can activate
 	it by adding to your vimrc:
 >
 		let g:asterisk#keeppos = 1
-<
-	Default: 0
 
 ==============================================================================
 KNOWN ISSUES						*asterisk-issues*
 
 	Issues
-	  https://github.com/haya14busa/vim-asterisk/issues
+	  https://github.com/haya14busa/asterisk.vim/issues
 
 
 ==============================================================================

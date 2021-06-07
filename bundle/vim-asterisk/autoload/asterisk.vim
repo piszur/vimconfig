@@ -35,7 +35,7 @@ let s:DIRECTION = { 'forward': 1, 'backward': 0 } " see :h v:searchforward
 
 let g:asterisk#keeppos = get(g:, 'asterisk#keeppos', s:FALSE)
 
-" do_jump: do not move cursor if false
+" do_jump: do not move cursor
 " is_whole: is_whole word. false if `g` flag given (e.g. * -> true, g* -> false)
 let s:_config = {
 \   'direction' : s:DIRECTION.forward,
@@ -53,7 +53,7 @@ function! asterisk#do(mode, config) abort
     let config = extend(s:default_config(), a:config)
     let is_visual = s:is_visual(a:mode)
     " Raw cword without \<\>
-    let cword = (is_visual ? s:get_selected_text() : s:escape_pattern(expand('<cword>')))
+    let cword = (is_visual ? s:get_selected_text() : expand('<cword>'))
     if cword is# ''
         return s:generate_error_cmd(is_visual)
     endif
@@ -72,75 +72,38 @@ function! asterisk#do(mode, config) abort
     if config.do_jump
         return search_cmd . "\<CR>"
     elseif config.keeppos && offset isnot 0
-        "" Do not jump with keeppos feature
-        " NOTE: It doesn't move cursor, so we can assume it works with
-        " operator pending mode even if it returns command to execute.
-        let echo = s:generate_echo_cmd(pattern_offseted)
-        let restore = s:generate_restore_cmd()
+        " Do not jump with keeppos feature
+        let echo = printf('echo "%s"', pattern_offseted)
+        let restore = s:restore_pos_cmd()
         "" *premove* & *aftermove* : not to cause flickr as mush as possible
         " flick corner case: `#` with under cursor word at the top of window
         " and the cursor is at the end of the word.
-        let premove =
-        \   (a:mode isnot# 'n' ? "\<Esc>" : '')
-        \   . 'm`'
-        \   . (config.direction is s:DIRECTION.forward ? '0' : '$')
-        " NOTE: Neovim doesn't stack pos to jumplist after "m`".
-        " https://github.com/haya14busa/vim-asterisk/issues/34
-        if has('nvim')
-            let aftermove = '``'
-        else
-            let aftermove = "\<C-o>"
-        endif
-        " NOTE: To avoid hit-enter prompt, it execute `restore` and `echo`
-        " command separately. I can also implement one function and call it
-        " once instead of separately, should I do this?
-        return printf("%s%s\<CR>%s:%s\<CR>:%s\<CR>", premove, search_cmd, aftermove, restore, echo)
+        let premove = 'm`' . (config.direction is s:DIRECTION.forward ? '0' : '$')
+        let aftermove = "\<C-o>"
+        return printf("%s%s\<CR>%s:%s | %s\<CR>", premove, search_cmd, aftermove, restore, echo)
     else " Do not jump: Just handle search related
         call s:set_search(pattern)
-        return s:generate_set_search_cmd(pattern, a:mode, config)
+        return s:generate_set_search_cmd(pattern, pre, config)
     endif
 endfunction
 
 "" For keeppos feature
-" NOTE: To avoid hit-enter prompt, this function name should be as short as
-" possible. `r` is short for restore. Should I use more short function using
-" basic global function instead of autoload one.
-function! asterisk#r() abort
+function! asterisk#restore() abort
     call winrestview(s:w)
-    call s:restore_event_ignore()
 endfunction
 
 function! s:set_view(view) abort
     let s:w = a:view
 endfunction
 
-"" For keeppos feature
-" NOTE: vim-asterisk moves cursor temporarily for keeppos feature with search
-" commands. It should not trigger the event related to this cursor move, so
-" set eventignore and restore it afterwards.
-function! s:set_event_ignore() abort
-    let s:ei = &ei
-    let events = ['CursorMoved']
-    if exists('##CmdlineEnter')
-        let events += ['CmdlineEnter', 'CmdlineLeave']
-    endif
-    let &ei = join(events, ',')
-endfunction
-
-function! s:restore_event_ignore() abort
-    let &ei = s:ei
-endfunction
-
-" @return restore_command: String
-function! s:generate_restore_cmd() abort
+function! s:restore_pos_cmd() abort
     call s:set_view(winsaveview())
-    call s:set_event_ignore()
-    return 'call asterisk#r()'
+    return 'call asterisk#restore()'
 endfunction
 
-" @return \<cword\> if needed: String
+" @return \<cword\>: String
 function! s:cword_pattern(cword, config) abort
-    return printf((a:config.is_whole && a:cword =~# '\k' ? '\<%s\>' : '%s'), a:cword)
+    return printf((a:config.is_whole ? '\<%s\>' : '%s'), a:cword)
 endfunction
 
 " This function is based on https://github.com/thinca/vim-visualstar
@@ -152,7 +115,7 @@ function! s:convert_2_word_pattern_4_visual(pattern, config) abort
     let type = (a:config.direction is# s:DIRECTION.forward ? '/' : '?')
     let [pre, post] = ['', '']
     if a:config.is_whole
-        let [head_pos, tail_pos] = s:sort_pos([s:getcoord('.'), s:getcoord('v')])
+        let [head_pos, tail_pos] = s:sort_pos([getpos('.')[1:2], getpos('v')[1:2]])
         let head = matchstr(text, '^.')
         let is_head_multibyte = 1 < len(head)
         let [l, col] = head_pos
@@ -166,7 +129,7 @@ function! s:convert_2_word_pattern_4_visual(pattern, config) abort
         let tail = matchstr(text, '.$')
         let is_tail_multibyte = 1 < len(tail)
         let [l, col] = tail_pos
-        let col += s:is_exclusive() && head_pos[1] !=# tail_pos[1] ? - 1 : len(tail) - 1
+        let col += len(tail) - 1
         let line = getline(l)
         let after = line[col :]
         let outer = matchstr(after, '^.')
@@ -176,7 +139,6 @@ function! s:convert_2_word_pattern_4_visual(pattern, config) abort
         endif
     endif
     let text = substitute(escape(text, '\' . type), "\n", '\\n', 'g')
-    let text = substitute(text, "\r", '\\r', 'g')
     return '\V' . pre . text . post
 endfunction
 
@@ -190,20 +152,14 @@ endfunction
 "" Generate command to turn on search related option like hlsearch to work
 " with :h function-search-undo
 " @return command: String
-function! s:generate_set_search_cmd(pattern, mode, config) abort
+function! s:generate_set_search_cmd(pattern, pre, config) abort
     " :h function-search-undo
     " :h v:hlsearch
     " :h v:searchforward
     let hlsearch = 'let &hlsearch=&hlsearch'
     let searchforward = printf('let v:searchforward = %d', a:config.direction)
-    let echo = s:generate_echo_cmd(a:pattern)
-    let esc = (a:mode isnot# 'n' ? "\<Esc>" : '')
-    return printf("%s:\<C-u>%s\<CR>:%s\<CR>:%s\<CR>", esc, hlsearch, searchforward, echo)
-endfunction
-
-" @return echo_command: String
-function! s:generate_echo_cmd(message) abort
-    return printf('echo "%s"', escape(a:message, '\"'))
+    let echo = printf('echo "%s"', a:pattern)
+    return printf("%s:\<C-u>%s | %s | %s\<CR>", a:pre, hlsearch, searchforward, echo)
 endfunction
 
 "" Generate command to show error with empty pattern
@@ -221,13 +177,10 @@ function! s:should_plus_one_count(cword, config, mode) abort
     " For backward, because count isn't needed with <expr> but it requires
     " +1 for backward and for the case that cursor is not at the head of
     " cword
-    if s:is_visual(a:mode)
-        return a:config.direction is# s:DIRECTION.backward ? s:TRUE : s:FALSE
-    else
-        return a:config.direction is# s:DIRECTION.backward
-        \   ? s:get_pos_char() =~# '\k' && ! s:is_head_of_cword(a:cword) && ! a:config.keeppos
-        \   : s:get_pos_char() !~# '\k'
-    endif
+    return s:is_visual(a:mode) ? s:FALSE
+    \   : a:config.direction is# s:DIRECTION.backward
+    \   ? s:get_pos_char() =~# '\k' && ! s:is_head_of_cword(a:cword) && ! a:config.keeppos
+    \   : s:get_pos_char() !~# '\k'
 endfunction
 
 " @return boolean
@@ -239,17 +192,12 @@ endfunction
 " @return selected text
 function! s:get_selected_text(...) abort
     let mode = get(a:, 1, mode(1))
-    let end_col = s:curswant() is s:INT.MAX ? s:INT.MAX : s:get_col_in_visual('.')
+    let end_col = winsaveview().curswant is s:INT.MAX ?
+    \   s:INT.MAX : s:get_multibyte_aware_col('.')
     let current_pos = [line('.'), end_col]
-    let other_end_pos = [line('v'), s:get_col_in_visual('v')]
+    let other_end_pos = [line('v'), s:get_multibyte_aware_col('v')]
     let [begin, end] = s:sort_pos([current_pos, other_end_pos])
-    if s:is_exclusive() && begin[1] !=# end[1]
-        " Decrement column number for :set selection=exclusive
-        let end[1] -= 1
-    endif
-    if mode !=# 'V' && begin ==# end
-        let lines = [s:get_pos_char(begin)]
-    elseif mode ==# "\<C-v>"
+    if mode ==# "\<C-v>"
         let [min_c, max_c] = s:sort_num([begin[1], end[1]])
         let lines = map(range(begin[0], end[0]), '
         \   getline(v:val)[min_c - 1 : max_c - 1]
@@ -268,20 +216,19 @@ function! s:get_selected_text(...) abort
     return join(lines, "\n") . (mode ==# 'V' ? "\n" : '')
 endfunction
 
-" @return Number: return multibyte aware column number in Visual mode to
-" select
-function! s:get_col_in_visual(pos) abort
-    let [pos, other] = [a:pos, a:pos is# '.' ? 'v' : '.']
+" @return multibyte aware column number for select
+function! s:get_multibyte_aware_col(pos) abort
+    let [pos, other] = [a:pos, a:pos is '.' ? 'v' : '.']
     let c = col(pos)
-    let d = s:compare_pos(s:getcoord(pos), s:getcoord(other)) > 0
-    \   ? len(s:get_pos_char([line(pos), c - (s:is_exclusive() ? 1 : 0)])) - 1
+    let d = s:compare_pos(getpos(pos)[1:2], getpos(other)[1:2]) > 0
+    \   ? len(matchstr(getline(pos), '.', c - 1)) - 1
     \   : 0
     return c + d
 endfunction
 
 function! s:get_multi_col(pos) abort
     let c = col(a:pos)
-    return c + len(s:get_pos_char([line(a:pos), c])) - 1
+    return c + len(matchstr(getline(a:pos), '.', c - 1)) - 1
 endfunction
 
 " Helper:
@@ -290,27 +237,8 @@ function! s:is_visual(mode) abort
     return a:mode =~# "[vV\<C-v>]"
 endfunction
 
-" @return Boolean
-function! s:is_exclusive() abort
-    return &selection is# 'exclusive'
-endfunction
-
-function! s:curswant() abort
-    return winsaveview().curswant
-endfunction
-
-" @return coordinate: [Number, Number]
-function! s:getcoord(expr) abort
-    return getpos(a:expr)[1:2]
-endfunction
-
-"" Return character at given position with multibyte handling
-" @arg [Number, Number] as coordinate or expression for position :h line()
-" @return String
-function! s:get_pos_char(...) abort
-    let pos = get(a:, 1, '.')
-    let [line, col] = type(pos) is# type('') ? s:getcoord(pos) : pos
-    return matchstr(getline(line), '.', col - 1)
+function! s:get_pos_char() abort
+    return getline('.')[col('.')-1]
 endfunction
 
 " @return int index of cursor in cword
@@ -347,11 +275,6 @@ endfunction
 
 function! s:compare_pos(x, y) abort
     return max([-1, min([1,(a:x[0] == a:y[0]) ? a:x[1] - a:y[1] : a:x[0] - a:y[0]])])
-endfunction
-
-" taken from :h Vital.Prelude.escape_pattern()
-function! s:escape_pattern(str) abort
-    return escape(a:str, '~"\.^$[]*')
 endfunction
 
 " Restore 'cpoptions' {{{

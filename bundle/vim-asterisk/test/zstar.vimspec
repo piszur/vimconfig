@@ -12,7 +12,7 @@ Describe zstar
     End
 
     Before each
-        call cursor([1, 1])
+        :1
         normal! 2l
         let @/ = ''
     End
@@ -43,19 +43,6 @@ Describe zstar
             Assert Equals(g:Get_pos_char(), 'a')
             normal! 2h
             Assert Equals(g:Get_pos_char(), '1')
-        End
-        It handle 'selection' value
-          :1,$ delete
-          call g:Add_lines(['NeoBundle "kannokanno/previm"'])
-          let save = &selection
-          for v in ['inclusive', 'old', 'exclusive']
-            call cursor([1, 1])
-            Assert Equals(g:Get_pos_char(), 'N')
-            let &selection=v
-            normal ve6ho*
-            Assert Equals(histget('/', -1), '\V\<Neo')
-          endfor
-          let &selection = save
         End
     End
 

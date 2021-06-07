@@ -231,6 +231,12 @@ autocmd BufEnter,BufRead,BufNewFile,BufReadPost * :if &buftype is# 'quickfix' | 
 "moving cursor after the next |
 " nnoremap <Tab>| /|/e+1<cr>
 
+"remap Quickfix list window nex / prev
+nnoremap <Leader>n :cnext<CR>
+nnoremap <Leader>N :cprev<CR>
+nnoremap <Leader>l :lnext<CR>
+nnoremap <Leader>l :lprev<CR>
+
 "}}}
 "{{{ editor settings
 
